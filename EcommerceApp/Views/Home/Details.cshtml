@@ -1,0 +1,112 @@
+@model EcommerceApp.Models.ShoppingCart
+@{
+    ViewData["Title"] = Model.Product.Title;
+    var relatedProducts = ViewBag.RelatedProducts as List<EcommerceApp.Models.Product>;
+}
+
+<div class="py-3">
+    <a asp-action="Shop" class="btn btn-sm shopper-btn-outline rounded-pill px-3 mb-4"><i class="bi bi-arrow-left me-1"></i>Back to shop</a>
+
+    <div class="rounded-4 border overflow-hidden mb-5" style="border-color:#eef1f6 !important;">
+        <div class="row g-0">
+            <div class="col-md-6 col-lg-5 bg-light d-flex align-items-center justify-content-center p-4 p-lg-5" style="min-height:360px;">
+                @if (!string.IsNullOrEmpty(Model.Product.ImageUrl))
+                {
+                    <img src="@Model.Product.ImageUrl" alt="@Model.Product.Title" class="img-fluid rounded-3" style="max-height:400px;object-fit:contain;" />
+                }
+                else
+                {
+                    <span class="display-1 text-muted">🖼</span>
+                }
+            </div>
+            <div class="col-md-6 col-lg-7">
+                <div class="p-4 p-lg-5">
+                    @if (Model.Product.Category != null)
+                    {
+                        <span class="shopper-chip mb-3 d-inline-block">@Model.Product.Category.Name</span>
+                    }
+                    <h1 class="h2 fw-bold shopper-section-title">@Model.Product.Title</h1>
+
+                    @if (TempData["ErrorMessage"] != null) { <div class="alert alert-danger rounded-3 mt-3">@TempData["ErrorMessage"]</div> }
+                    @if (TempData["SuccessMessage"] != null) { <div class="alert alert-success rounded-3 mt-3">@TempData["SuccessMessage"]</div> }
+
+                    <div class="my-4">
+                        <partial name="_ProductPrice" model="Model.Product" view-data='new ViewDataDictionary(ViewData) { { "PriceSize", "fs-3" } }' />
+                        @if (Model.Product.StockQuantity > 0)
+                        {
+                            <span class="badge rounded-pill px-3 py-2" style="background:#e8f5e9;color:#2e7d32;">In stock (@Model.Product.StockQuantity)</span>
+                        }
+                        else
+                        {
+                            <span class="badge bg-danger rounded-pill px-3 py-2">Out of stock</span>
+                        }
+                    </div>
+
+                    @if (!string.IsNullOrEmpty(Model.Product.Description))
+                    {
+                        <div class="text-muted mb-4 small lh-lg">
+                            @Model.Product.Description
+                        </div>
+                    }
+
+                    <form method="post" asp-action="Details" class="mb-3">
+                        @Html.AntiForgeryToken()
+                        <input type="hidden" asp-for="ProductId" />
+                        <div class="row g-2 align-items-center mb-3">
+                            <div class="col-auto"><label class="small fw-semibold">Qty</label></div>
+                            <div class="col-3 col-sm-2">
+                                <input asp-for="Count" type="number" value="1" min="1" max="1000" class="form-control form-control-sm rounded-3 text-center" />
+                                <span asp-validation-for="Count" class="text-danger small"></span>
+                            </div>
+                        </div>
+                        <button type="submit" class="btn shopper-btn-primary rounded-3 py-2 px-4 w-100 w-sm-auto @(Model.Product.StockQuantity <= 0 ? "disabled" : "")"
+                                @(Model.Product.StockQuantity <= 0 ? "disabled" : "")>
+                            <i class="bi bi-cart-plus me-2"></i>Add to cart
+                        </button>
+                    </form>
+
+                    @if (User.Identity?.IsAuthenticated == true)
+                    {
+                        <form asp-controller="Wishlist" asp-action="Toggle" method="post">
+                            @Html.AntiForgeryToken()
+                            <input type="hidden" name="productId" value="@Model.ProductId" />
+                            <button type="submit" class="btn shopper-btn-outline rounded-3 w-100 w-sm-auto">
+                                <i class="bi @(ViewBag.InWishlist == true ? "bi-heart-fill text-danger" : "bi-heart") me-2"></i>@(ViewBag.InWishlist == true ? "Remove from wishlist" : "Add to wishlist")
+                            </button>
+                        </form>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+
+    @if (relatedProducts != null && relatedProducts.Any())
+    {
+        <section>
+            <div class="d-flex justify-content-between align-items-center mb-3">
+                <h2 class="shopper-section-title h5 mb-0">You may also like</h2>
+            </div>
+            <div class="row g-3">
+                @foreach (var product in relatedProducts)
+                {
+                    <div class="col-6 col-md-3">
+                        <article class="shopper-product-card d-flex flex-column h-100">
+                            <a asp-action="Details" asp-route-id="@product.Id" class="ratio ratio-1x1 bg-light overflow-hidden">
+                                @if (!string.IsNullOrEmpty(product.ImageUrl))
+                                {
+                                    <img src="@product.ImageUrl" alt="@product.Title" class="thumb" />
+                                }
+                                else { <span class="d-flex align-items-center justify-content-center fs-2">🖼</span> }
+                            </a>
+                            <div class="p-3">
+                                <h3 class="h6 fw-bold mb-2"><a asp-action="Details" asp-route-id="@product.Id" class="text-decoration-none text-dark text-truncate d-block">@product.Title</a></h3>
+                                <partial name="_ProductPrice" model="product" />
+                                <a asp-action="Details" asp-route-id="@product.Id" class="btn btn-sm btn-outline-primary rounded-pill w-100 mt-2">View</a>
+                            </div>
+                        </article>
+                    </div>
+                }
+            </div>
+        </section>
+    }
+</div>

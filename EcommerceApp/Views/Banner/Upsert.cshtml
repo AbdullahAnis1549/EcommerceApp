@@ -1,0 +1,22 @@
+@model EcommerceApp.Models.Banner
+@{ 
+    ViewData["Title"] = Model.Id == 0 ? "Create Banner" : "Edit Banner"; 
+    Layout = "_AdminLayout"; 
+}
+<form method="post" enctype="multipart/form-data" class="border p-4 mt-4">
+    <input asp-for="Id" type="hidden" /><input asp-for="ImageUrl" type="hidden" />
+    <h2 class="text-primary">@(Model.Id == 0 ? "Create" : "Edit") Banner</h2><hr/>
+    <div class="row">
+        <div class="col-md-8">
+            <div class="mb-3"><label asp-for="Title"></label><input asp-for="Title" class="form-control" /></div>
+            <div class="mb-3"><label asp-for="Subtitle"></label><input asp-for="Subtitle" class="form-control" /></div>
+            <div class="mb-3"><label asp-for="LinkUrl"></label><input asp-for="LinkUrl" class="form-control" placeholder="/Home/Shop" /></div>
+            <div class="mb-3"><label asp-for="DisplayOrder"></label><input asp-for="DisplayOrder" type="number" class="form-control" /></div>
+            <div class="mb-3 form-check"><input asp-for="IsActive" class="form-check-input" /><label asp-for="IsActive" class="form-check-label"></label></div>
+            <div class="mb-3"><label>Banner Image</label><input type="file" name="file" class="form-control" accept="image/*" /></div>
+            <button type="submit" class="btn btn-primary">Save</button>
+            <a asp-action="Index" class="btn btn-secondary">Back</a>
+        </div>
+        <div class="col-md-4">@if (!string.IsNullOrEmpty(Model.ImageUrl)) { <img src="@Model.ImageUrl" class="img-fluid rounded" /> }</div>
+    </div>
+</form>

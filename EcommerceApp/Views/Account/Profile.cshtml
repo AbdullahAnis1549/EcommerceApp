@@ -1,0 +1,171 @@
+@model EcommerceApp.Models.User
+@{
+    ViewData["Title"] = "My Profile";
+}
+
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8 col-lg-7">
+            <div class="card shadow border-0 rounded-4 overflow-hidden">
+                <!-- Header -->
+                <div class="text-white text-center py-4" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);">
+                    <h4 class="mb-0 fw-bold">👤 Profile Settings</h4>
+                </div>
+
+                <div class="card-body p-4 p-md-5">
+                    <!-- Success Message -->
+                    @if (TempData["SuccessMessage"] != null)
+                    {
+                        <div class="alert alert-success alert-dismissible fade show mb-4 rounded-3" role="alert">
+                            ✅ @TempData["SuccessMessage"]
+                            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                        </div>
+                    }
+
+                    <form asp-action="Profile" asp-controller="Account" method="post" enctype="multipart/form-data">
+                        @Html.AntiForgeryToken()
+                        <input asp-for="Id" type="hidden" />
+                        <input asp-for="Email" type="hidden" />
+                        <input asp-for="Password" type="hidden" />
+
+                        <!-- ═══════════════════════════════════════ -->
+                        <!-- SECTION 1: Profile Picture             -->
+                        <!-- ═══════════════════════════════════════ -->
+                        <div class="text-center mb-5">
+                            <div class="position-relative d-inline-block mb-3">
+                                @if (!string.IsNullOrEmpty(Model.ImageUrl))
+                                {
+                                    <img src="@Model.ImageUrl" alt="Profile" id="imagePreview" style="width:130px; height:130px; object-fit:cover;" class="rounded-circle border border-4 border-white shadow" />
+                                }
+                                else
+                                {
+                                    <div id="imagePlaceholder" class="rounded-circle bg-light d-flex align-items-center justify-content-center border border-4 border-white shadow" style="width:130px; height:130px; font-size:50px; color:#dee2e6;">
+                                        👤
+                                    </div>
+                                }
+                                <label for="imageUpload" class="btn btn-dark btn-sm rounded-circle position-absolute bottom-0 end-0" style="width:36px;height:36px;display:flex;align-items:center;justify-content:center;cursor:pointer;">
+                                    📷
+                                </label>
+                                <input type="file" name="imageFile" id="imageUpload" class="d-none" accept="image/*" onchange="previewProfileImage(this)" />
+                            </div>
+                        </div>
+
+                        <!-- ═══════════════════════════════════════ -->
+                        <!-- SECTION 2: Basic Info (User Table)     -->
+                        <!-- ═══════════════════════════════════════ -->
+                        <h5 class="fw-bold mb-3 pb-2 border-bottom" style="color: #667eea;">📋 Basic Information</h5>
+
+                        <div class="row g-3 mb-4">
+                            <div class="col-md-6">
+                                <label class="form-label fw-bold">Full Name</label>
+                                <input asp-for="Name" class="form-control form-control-lg bg-light rounded-3" placeholder="Enter your name" />
+                                <span asp-validation-for="Name" class="text-danger small"></span>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label fw-bold text-muted">Email Address</label>
+                                <input value="@Model.Email" class="form-control form-control-lg bg-light border-0 rounded-3" readonly />
+                                <div class="form-text text-info small">🔒 Email cannot be changed.</div>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label fw-bold">Phone Number</label>
+                                <input asp-for="Phone" class="form-control form-control-lg bg-light rounded-3" placeholder="Enter your phone" />
+                                <span asp-validation-for="Phone" class="text-danger small"></span>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label fw-bold text-muted">Role</label>
+                                <input value="@Model.UserRole" class="form-control form-control-lg bg-light border-0 rounded-3" readonly />
+                            </div>
+                        </div>
+
+                        <!-- ═══════════════════════════════════════ -->
+                        <!-- SECTION 3: Address Info (UserProfile)  -->
+                        <!-- ═══════════════════════════════════════ -->
+                        <h5 class="fw-bold mb-3 pb-2 border-bottom" style="color: #667eea;">📍 Address Information</h5>
+
+                        <div class="row g-3 mb-4">
+                            <div class="col-12">
+                                <label class="form-label fw-bold">Full Address</label>
+                                <input name="fullAddress" value="@Model.UserProfile?.FullAddress" class="form-control form-control-lg bg-light rounded-3" placeholder="House #, Street, Area" />
+                            </div>
+                            <div class="col-md-4">
+                                <label class="form-label fw-bold">City</label>
+                                <input name="city" value="@Model.UserProfile?.City" class="form-control form-control-lg bg-light rounded-3" placeholder="City" />
+                            </div>
+                            <div class="col-md-4">
+                                <label class="form-label fw-bold">State / Province</label>
+                                <input name="state" value="@Model.UserProfile?.State" class="form-control form-control-lg bg-light rounded-3" placeholder="State" />
+                            </div>
+                            <div class="col-md-4">
+                                <label class="form-label fw-bold">Postal Code</label>
+                                <input name="postalCode" value="@Model.UserProfile?.PostalCode" class="form-control form-control-lg bg-light rounded-3" placeholder="Postal Code" />
+                            </div>
+                        </div>
+
+                        <!-- ═══════════════════════════════════════ -->
+                        <!-- SECTION 4: Personal Info (UserProfile) -->
+                        <!-- ═══════════════════════════════════════ -->
+                        <h5 class="fw-bold mb-3 pb-2 border-bottom" style="color: #667eea;">🧑 Personal Details</h5>
+
+                        <div class="row g-3 mb-4">
+                            <div class="col-md-6">
+                                <label class="form-label fw-bold">Date of Birth</label>
+                                <input type="date" name="dateOfBirth" value="@(Model.UserProfile?.DateOfBirth?.ToString("yyyy-MM-dd"))" class="form-control form-control-lg bg-light rounded-3" />
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label fw-bold">Gender</label>
+                                <select name="gender" class="form-select form-select-lg bg-light rounded-3">
+                                    <option value="">Select Gender</option>
+                                    <option value="Male" selected="@(Model.UserProfile?.Gender == "Male")">Male</option>
+                                    <option value="Female" selected="@(Model.UserProfile?.Gender == "Female")">Female</option>
+                                    <option value="Other" selected="@(Model.UserProfile?.Gender == "Other")">Other</option>
+                                </select>
+                            </div>
+                            <div class="col-12">
+                                <label class="form-label fw-bold">About Me</label>
+                                <textarea name="bio" rows="3" class="form-control form-control-lg bg-light rounded-3" placeholder="Tell us about yourself...">@Model.UserProfile?.Bio</textarea>
+                            </div>
+                        </div>
+
+                        <!-- Submit Button -->
+                        <div class="d-grid gap-2 mt-4">
+                            <button type="submit" class="btn btn-lg py-3 fw-bold shadow-sm text-white rounded-3" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);">
+                                💾 Save Changes
+                            </button>
+                            <a asp-controller="Home" asp-action="Index" class="btn btn-link text-muted mt-2">← Back to Home</a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+    <script>
+        function previewProfileImage(input) {
+            if (input.files && input.files[0]) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    let preview = document.getElementById('imagePreview');
+                    const placeholder = document.getElementById('imagePlaceholder');
+                    
+                    if (!preview) {
+                        preview = document.createElement('img');
+                        preview.id = 'imagePreview';
+                        preview.style.width = '130px';
+                        preview.style.height = '130px';
+                        preview.style.objectFit = 'cover';
+                        preview.className = 'rounded-circle border border-4 border-white shadow';
+                        if (placeholder) {
+                            placeholder.parentNode.insertBefore(preview, placeholder);
+                            placeholder.style.display = 'none';
+                        }
+                    }
+                    preview.src = e.target.result;
+                }
+                reader.readAsDataURL(input.files[0]);
+            }
+        }
+    </script>
+}

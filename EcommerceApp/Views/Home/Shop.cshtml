@@ -1,0 +1,130 @@
+@model List<EcommerceApp.Models.Product>
+@{
+    ViewData["Title"] = "Shop";
+    var categories = ViewBag.Categories as List<EcommerceApp.Models.Category>;
+    var selectedCategoryId = ViewBag.SelectedCategoryId as int?;
+    var selectedCategoryName = ViewBag.SelectedCategoryName as string;
+}
+
+<div class="row g-4 align-items-start">
+    <aside class="col-lg-2 col-md-3 mb-3 mb-md-0">
+        <div class="sticky-top" style="top:1rem;z-index:1;">
+            <div class="rounded-3 border p-3 p-lg-4" style="background:var(--shopper-surface);border-color:#e8eaed !important;">
+                <h2 class="h6 fw-bold mb-3">Categories</h2>
+                <nav class="nav flex-column gap-1">
+                    <a asp-action="Shop"
+                       class="shop-cat-link @(selectedCategoryId == null ? "active" : "")">All products</a>
+                    @if (categories != null)
+                    {
+                        foreach (var category in categories)
+                        {
+                            <a asp-action="Shop" asp-route-categoryId="@category.Id"
+                               class="shop-cat-link @(selectedCategoryId == category.Id ? "active" : "")">@category.Name</a>
+                        }
+                    }
+                </nav>
+            </div>
+        </div>
+    </aside>
+
+    <div class="col-lg-10 col-md-9">
+        <div class="d-flex flex-wrap justify-content-between align-items-center gap-3 mb-4">
+            <div>
+                <h1 class="shopper-section-title h4 mb-1">@selectedCategoryName</h1>
+                <p class="text-muted small mb-0">@Model.Count product@(Model.Count != 1 ? "s" : "") found</p>
+            </div>
+            <a asp-controller="Home" asp-action="Index" class="btn btn-sm shopper-btn-outline rounded-pill px-3"><i class="bi bi-arrow-left me-1"></i>Home</a>
+        </div>
+
+        <form method="get" asp-action="Shop" class="rounded-4 border p-3 mb-4" style="border-color:#eef1f6 !important;background:#fff;">
+            <input type="hidden" name="categoryId" value="@selectedCategoryId" />
+            <div class="row g-2 align-items-end">
+                <div class="col-md-4 col-lg-3">
+                    <label class="small text-muted">Search</label>
+                    <input name="search" value="@ViewBag.Search" class="form-control form-control-sm rounded-3" placeholder="Products..." />
+                </div>
+                <div class="col-6 col-md-2">
+                    <label class="small text-muted">Min $</label>
+                    <input name="minPrice" type="number" value="@ViewBag.MinPrice" class="form-control form-control-sm rounded-3" />
+                </div>
+                <div class="col-6 col-md-2">
+                    <label class="small text-muted">Max $</label>
+                    <input name="maxPrice" type="number" value="@ViewBag.MaxPrice" class="form-control form-control-sm rounded-3" />
+                </div>
+                <div class="col-md-3 col-lg-2">
+                    <label class="small text-muted">Sort</label>
+                    @{
+                        var sortVal = ViewBag.Sort as string;
+                    }
+                    <select name="sort" class="form-select form-select-sm rounded-3">
+                        <option value="" selected="@(string.IsNullOrEmpty(sortVal))">Latest</option>
+                        <option value="price_asc" selected="@(sortVal == "price_asc")">Price ↑</option>
+                        <option value="price_desc" selected="@(sortVal == "price_desc")">Price ↓</option>
+                    </select>
+                </div>
+                <div class="col-md-2">
+                    <button type="submit" class="btn shopper-btn-primary btn-sm w-100 rounded-3 py-2">Filter</button>
+                </div>
+            </div>
+        </form>
+
+        @if (Model != null && Model.Any())
+        {
+            <div class="row g-3">
+                @foreach (var product in Model)
+                {
+                    <div class="col-6 col-md-4 col-xl-3">
+                        <article class="shopper-product-card d-flex flex-column h-100">
+                            <a asp-controller="Home" asp-action="Details" asp-route-id="@product.Id" class="ratio ratio-1x1 bg-light overflow-hidden">
+                                @if (!string.IsNullOrEmpty(product.ImageUrl))
+                                {
+                                    <img src="@product.ImageUrl" alt="@product.Title" class="thumb" />
+                                }
+                                else { <span class="d-flex align-items-center justify-content-center fs-1 text-muted">🖼</span> }
+                            </a>
+                            <div class="p-3 d-flex flex-column flex-grow-1">
+                                @if (product.Category != null)
+                                {
+                                    <span class="shopper-chip align-self-start mb-2">@product.Category.Name</span>
+                                }
+                                <h3 class="h6 fw-bold mb-2"><a asp-controller="Home" asp-action="Details" asp-route-id="@product.Id" class="text-decoration-none text-dark">@product.Title</a></h3>
+                                <div class="mt-auto mb-2"><partial name="_ProductPrice" model="product" /></div>
+                                <a asp-controller="Home" asp-action="Details" asp-route-id="@product.Id" class="btn btn-sm btn-outline-primary rounded-pill w-100">View product</a>
+                            </div>
+                        </article>
+                    </div>
+                }
+            </div>
+        }
+        else
+        {
+            <div class="text-center py-5 rounded-4 border" style="background:var(--shopper-surface);">
+                <i class="bi bi-search display-4 text-muted"></i>
+                <h3 class="fw-bold mt-3">No products found</h3>
+                <p class="text-muted">Try another category or clear filters.</p>
+                <a asp-action="Shop" class="btn shopper-btn-primary rounded-pill">Reset filters</a>
+            </div>
+        }
+    </div>
+</div>
+
+<style>
+    .shop-cat-link {
+        display: block;
+        padding: 0.45rem 0.65rem;
+        border-radius: 8px;
+        text-decoration: none;
+        color: var(--shopper-muted);
+        font-size: 13px;
+        font-weight: 600;
+        transition: background .15s, color .15s;
+    }
+    .shop-cat-link:hover {
+        background: rgba(40, 53, 147, 0.08);
+        color: var(--shopper-indigo);
+    }
+    .shop-cat-link.active {
+        background: var(--shopper-lavender);
+        color: var(--shopper-indigo);
+    }
+</style>

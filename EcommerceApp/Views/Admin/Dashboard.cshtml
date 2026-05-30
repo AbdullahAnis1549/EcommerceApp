@@ -1,0 +1,198 @@
+@{
+    ViewData["Title"] = "Admin Dashboard";
+    Layout = "_AdminLayout";
+}
+
+<div class="container-fluid">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h3 class="mb-0">Dashboard</h3>
+            <small class="text-muted">Welcome back. Here's what's happening with your store today.</small>
+        </div>
+        <div class="d-flex align-items-center">
+            <input type="text" class="form-control form-control-sm me-2" placeholder="Select date range" style="width:220px;" />
+            <button class="btn btn-primary btn-sm">Export Report</button>
+        </div>
+    </div>
+
+    <!-- Stat Cards -->
+    <div class="row g-3 mb-4">
+        <div class="col-md-2">
+            <div class="card p-3 shadow-sm stats-card">
+                <small class="text-muted">Total Sales</small>
+                <div class="d-flex align-items-center justify-content-between mt-2">
+                    <h5 class="mb-0">$@(((decimal)ViewBag.TotalRevenue).ToString("N2"))</h5>
+                    <span class="badge bg-light text-success">+18.6%</span>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-2">
+            <div class="card p-3 shadow-sm stats-card">
+                <small class="text-muted">Total Orders</small>
+                <div class="d-flex align-items-center justify-content-between mt-2">
+                    <h5 class="mb-0">@ViewBag.TotalOrders</h5>
+                    <span class="badge bg-light text-success">+14.2%</span>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-2">
+            <div class="card p-3 shadow-sm stats-card">
+                <small class="text-muted">Total Customers</small>
+                <div class="d-flex align-items-center justify-content-between mt-2">
+                    <h5 class="mb-0">@ViewBag.TotalUsers</h5>
+                    <span class="badge bg-light text-success">+20.5%</span>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-2">
+            <div class="card p-3 shadow-sm stats-card">
+                <small class="text-muted">Products</small>
+                <div class="d-flex align-items-center justify-content-between mt-2">
+                    <h5 class="mb-0">@ViewBag.TotalProducts</h5>
+                    <span class="badge bg-light text-success">+8.5%</span>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-2">
+            <div class="card p-3 shadow-sm stats-card">
+                <small class="text-muted">Revenue</small>
+                <div class="d-flex align-items-center justify-content-between mt-2">
+                    <h5 class="mb-0">$@(((decimal)ViewBag.TotalRevenue).ToString("N2"))</h5>
+                    <span class="badge bg-light text-success">+12.8%</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Row: Chart + Recent Orders + Top Products -->
+    <div class="row g-3">
+        <div class="col-lg-7">
+            <div class="card p-3 shadow-sm">
+                <div class="d-flex justify-content-between align-items-center mb-2">
+                    <h6 class="mb-0">Sales Overview</h6>
+                    <div>
+                        <select class="form-select form-select-sm">
+                            <option>Last 30 Days</option>
+                        </select>
+                    </div>
+                </div>
+                <canvas id="salesChart" height="160"></canvas>
+            </div>
+        </div>
+
+        <div class="col-lg-2">
+            <div class="card p-3 shadow-sm">
+                <h6>Recent Orders</h6>
+                <ul class="list-unstyled mb-0 mt-3">
+                @if (ViewBag.RecentOrders != null)
+                {
+                    foreach (var o in (IEnumerable<EcommerceApp.Models.OrderHeader>)ViewBag.RecentOrders)
+                    {
+                        <li class="d-flex justify-content-between align-items-center mb-2">
+                            <div>
+                                <a asp-controller="Order" asp-action="Details" asp-route-orderId="@o.Id">#ORD-@o.Id</a><br />
+                                <small class="text-muted">@o.Name</small>
+                            </div>
+                            <strong>$@o.OrderTotal.ToString("N2")</strong>
+                        </li>
+                    }
+                }
+                </ul>
+            </div>
+        </div>
+
+        <div class="col-lg-3">
+            <div class="card p-3 shadow-sm">
+                <h6>Top Selling Products</h6>
+                <ul class="list-unstyled mb-0 mt-3">
+                @if (ViewBag.TopProducts is IEnumerable<EcommerceApp.ViewModels.TopProductRow> topProducts)
+                {
+                    foreach (var p in topProducts)
+                    {
+                        <li class="d-flex justify-content-between align-items-center mb-2">
+                            <div>
+                                @p.Title<br />
+                                <small class="text-muted">@p.Quantity sold</small>
+                            </div>
+                            <strong>$@p.Revenue.ToString("N2")</strong>
+                        </li>
+                    }
+                }
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bottom Row -->
+    <div class="row g-3 mt-3">
+        <div class="col-lg-4">
+            <div class="card p-3 shadow-sm">
+                <h6>Sales by Category</h6>
+                <canvas id="pieChart" height="180"></canvas>
+            </div>
+        </div>
+        <div class="col-lg-4">
+            <div class="card p-3 shadow-sm">
+                <h6>Website Visitors</h6>
+                <canvas id="visitorsChart" height="160"></canvas>
+            </div>
+        </div>
+        <div class="col-lg-4">
+            <div class="card p-3 shadow-sm">
+                <h6>Low Stock Products</h6>
+                <ul class="list-unstyled mb-0 mt-3">
+                @if (ViewBag.LowStockProducts != null)
+                {
+                    foreach (var lp in (IEnumerable<EcommerceApp.Models.Product>)ViewBag.LowStockProducts)
+                    {
+                        <li class="d-flex justify-content-between align-items-center mb-2">@lp.Title <span class="text-danger">Stock: @lp.StockQuantity</span></li>
+                    }
+                }
+                </ul>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+@section Scripts {
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        // Serialize server data into JS
+        const salesLabels = @Html.Raw(System.Text.Json.JsonSerializer.Serialize(ViewBag.SalesLabels ?? new List<string>()));
+        const salesData = @Html.Raw(System.Text.Json.JsonSerializer.Serialize(ViewBag.SalesData ?? new List<decimal>()));
+        const ordersData = @Html.Raw(System.Text.Json.JsonSerializer.Serialize(ViewBag.OrdersData ?? new List<int>()));
+        const categoryLabels = @Html.Raw(System.Text.Json.JsonSerializer.Serialize(ViewBag.SalesByCategoryLabels ?? new List<string>()));
+        const categoryData = @Html.Raw(System.Text.Json.JsonSerializer.Serialize(ViewBag.SalesByCategoryData ?? new List<decimal>()));
+
+        const ctx = document.getElementById('salesChart').getContext('2d');
+        const salesChart = new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: salesLabels,
+                datasets: [{
+                    label: 'Total Sales',
+                    data: salesData,
+                    borderColor: '#6c5ce7',
+                    backgroundColor: 'rgba(108,92,231,0.1)',
+                    tension: 0.35,
+                    fill: true
+                },{
+                    label: 'Total Orders',
+                    data: ordersData,
+                    borderColor: '#7dd3fc',
+                    backgroundColor: 'rgba(125,211,252,0.06)',
+                    tension: 0.35,
+                    fill: true
+                }]
+            },
+            options: { responsive: true, plugins: { legend: { display: false } } }
+        });
+
+        const pie = document.getElementById('pieChart').getContext('2d');
+        new Chart(pie, { type: 'doughnut', data: { labels: categoryLabels, datasets:[{ data: categoryData, backgroundColor:['#60a5fa','#f472b6','#f97316','#34d399','#a78bfa'] }] }, options:{responsive:true, plugins:{legend:{position:'right'}}} });
+
+        const vis = document.getElementById('visitorsChart').getContext('2d');
+        new Chart(vis, { type: 'line', data:{ labels: salesLabels, datasets:[{ data: ordersData, borderColor:'#7c3aed', backgroundColor:'rgba(124,58,237,0.08)', fill:true }] }, options:{ responsive:true, plugins:{ legend:{ display:false } } } });
+    </script>
+}

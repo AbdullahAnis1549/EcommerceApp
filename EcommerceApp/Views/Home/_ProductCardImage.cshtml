@@ -1,0 +1,15 @@
+@model (EcommerceApp.Models.Product Product, string LinkClass)
+@{
+    var product = Model.Product;
+    var linkClass = Model.LinkClass;
+}
+<a asp-action="Details" asp-route-id="@product.Id" class="@linkClass">
+    @if (!string.IsNullOrEmpty(product.ImageUrl))
+    {
+        <img src="@product.ImageUrl" alt="@product.Title" class="shopper-product-img" loading="lazy"
+             onerror="this.classList.add('d-none'); this.parentElement.querySelector('.shopper-img-fallback')?.classList.remove('d-none');" />
+    }
+    <span class="shopper-img-fallback @(string.IsNullOrEmpty(product.ImageUrl) ? "" : "d-none")">
+        <i class="bi bi-image"></i>
+    </span>
+</a>

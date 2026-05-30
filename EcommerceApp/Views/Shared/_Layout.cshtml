@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - Shopper.</title>
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/css/theme-modern-commerce.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/theme-shopper.css" asp-append-version="true" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css" />
+</head>
+<body class="shopper-store">
+    <div class="shopper-topbar py-2">
+        <div class="container-fluid px-3 px-lg-5">
+            <div class="row align-items-center gx-2 gy-1">
+                <div class="col-lg-6 text-center text-lg-start small">
+                    <span class="d-none d-sm-inline">Summer sale is live — shop fresh deals on top brands.</span>
+                    <span class="d-sm-none">Summer sale is live!</span>
+                </div>
+                <div class="col-lg-6 text-center text-lg-end small">
+                    <span class="d-none d-md-inline me-3">Free shipping on orders over $50</span>
+                    @if (User.Identity?.IsAuthenticated == true)
+                    {
+                        <a asp-controller="Order" asp-action="Index" class="me-3">Track order</a>
+                    }
+                    else
+                    {
+                        <a asp-controller="Account" asp-action="Login" class="me-3">Track order</a>
+                    }
+                    <a asp-controller="Home" asp-action="Contact">Help</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    @await Component.InvokeAsync("StoreHeader")
+
+    <main class="shopper-main py-3 py-md-4">
+        <div class="container-fluid px-3 px-lg-5">
+            @RenderBody()
+        </div>
+    </main>
+
+    <footer class="shopper-footer pt-5 pb-4">
+        <div class="container-fluid px-3 px-lg-5">
+            <div class="row g-4">
+                <div class="col-md-4">
+                    <div class="d-flex align-items-center gap-2 mb-3">
+                        <span class="shopper-logo-icon"><i class="bi bi-bag-heart-fill"></i></span>
+                        <span class="fw-bold fs-5 text-white">Shopper.</span>
+                    </div>
+                    <p class="small text-white-50 mb-0">Modern shopping with secure checkout, easy returns, and fast delivery across India.</p>
+                </div>
+                <div class="col-6 col-md-2">
+                    <h6 class="text-white fw-bold mb-3">Shop</h6>
+                    <ul class="list-unstyled small">
+                        <li class="mb-2"><a asp-controller="Home" asp-action="Shop">All products</a></li>
+                        <li class="mb-2"><a asp-controller="Home" asp-action="Deals">Deals</a></li>
+                        <li class="mb-2"><a asp-controller="Home" asp-action="NewArrivals">New Arrivals</a></li>
+                        <li class="mb-2"><a asp-controller="Home" asp-action="Index" asp-fragment="best-sellers">Best Sellers</a></li>
+                        <li class="mb-2"><a asp-controller="Home" asp-action="About">About</a></li>
+                    </ul>
+                </div>
+                <div class="col-6 col-md-2">
+                    <h6 class="text-white fw-bold mb-3">Support</h6>
+                    <ul class="list-unstyled small">
+                        <li class="mb-2"><a asp-controller="Home" asp-action="Contact">Contact</a></li>
+                        <li class="mb-2"><a asp-controller="Home" asp-action="ReturnPolicy">Returns</a></li>
+                        <li class="mb-2"><a asp-controller="Home" asp-action="Terms">Terms</a></li>
+                    </ul>
+                </div>
+                <div class="col-md-4">
+                    <h6 class="text-white fw-bold mb-3">Stay in the loop</h6>
+                    <p class="small text-white-50">New drops, offers, and order updates — straight to your inbox.</p>
+                    <a asp-controller="Account" asp-action="Register" class="btn btn-light btn-sm rounded-pill px-4 fw-semibold">Create account</a>
+                </div>
+            </div>
+            <hr class="border-secondary opacity-25 my-4" />
+            <div class="text-center small text-white-50">
+                &copy; @DateTime.UtcNow.Year Shopper. · <a asp-controller="Home" asp-action="Privacy">Privacy</a>
+            </div>
+        </div>
+    </footer>
+
+    @{
+        var ctr = ViewContext.RouteData.Values["controller"]?.ToString() ?? "";
+        var act = ViewContext.RouteData.Values["action"]?.ToString() ?? "";
+        var homeActive = ctr == "Home" && act == "Index";
+        var shopActive = ctr == "Home" && act == "Shop";
+        var cartActive = ctr == "Cart";
+        var accountActive = ctr == "User" || (ctr == "Account" && act == "Profile");
+    }
+    <nav class="shopper-bottom-nav" aria-label="Mobile">
+        <a asp-controller="Home" asp-action="Index" class="@(homeActive ? "active" : null)"><i class="bi bi-house-door"></i>Home</a>
+        <a asp-controller="Home" asp-action="Shop" class="@(shopActive ? "active" : null)"><i class="bi bi-grid"></i>Shop</a>
+        <a asp-controller="Cart" asp-action="Index" class="@(cartActive ? "active" : null)"><i class="bi bi-cart3"></i>Cart</a>
+        @if (User.Identity?.IsAuthenticated == true)
+        {
+            <a asp-controller="User" asp-action="Home" class="@(accountActive ? "active" : null)"><i class="bi bi-person"></i>Account</a>
+        }
+        else
+        {
+            <a asp-controller="Account" asp-action="Login" class="@(ctr == "Account" && act == "Login" ? "active" : null)"><i class="bi bi-person"></i>Sign in</a>
+        }
+    </nav>
+
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>

@@ -1,0 +1,120 @@
+@model List<EcommerceApp.Models.User>
+@using EcommerceApp.Models
+
+@{
+    ViewData["Title"] = "Manage Users";
+    int currentUserId = (int)ViewBag.CurrentUserId;
+}
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h2 class="fw-bold mb-0">Manage Users</h2>
+    <a asp-action="Dashboard" class="btn btn-secondary">Back to Dashboard</a>
+</div>
+
+@if (TempData["SuccessMessage"] != null)
+{
+    <div class="alert alert-success alert-dismissible fade show">
+        @TempData["SuccessMessage"]
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
+}
+@if (TempData["ErrorMessage"] != null)
+{
+    <div class="alert alert-danger alert-dismissible fade show">
+        @TempData["ErrorMessage"]
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
+}
+
+<div class="card shadow-sm">
+    <div class="card-body p-0">
+        <div class="table-responsive">
+            <table class="table table-hover mb-0 align-middle">
+                <thead class="table-light">
+                    <tr>
+                        <th>ID</th>
+                        <th>Name</th>
+                        <th>Email</th>
+                        <th>Phone</th>
+                        <th>Role</th>
+                        <th>Status</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var user in Model)
+                    {
+                        var isAdmin = user.UserRole == SD.RoleAdmin;
+                        var isSelf = user.Id == currentUserId;
+                        <tr>
+                            <td>@user.Id</td>
+                            <td>@user.Name @(isSelf ? "(you)" : "")</td>
+                            <td>@user.Email</td>
+                            <td>@user.Phone</td>
+                            <td>
+                                @if (isAdmin)
+                                {
+                                    <span class="badge bg-dark">Admin</span>
+                                }
+                                else
+                                {
+                                    <span class="badge bg-light text-dark border">User</span>
+                                }
+                            </td>
+                            <td>
+                                @if (user.IsBlocked)
+                                {
+                                    <span class="badge bg-danger">Blocked</span>
+                                }
+                                else if (user.VerifyStatus == true)
+                                {
+                                    <span class="badge bg-success">Active</span>
+                                }
+                                else
+                                {
+                                    <span class="badge bg-warning text-dark">Unverified</span>
+                                }
+                            </td>
+                            <td>
+                                @if (!isSelf)
+                                {
+                                    <div class="d-flex flex-wrap gap-1">
+                                        <form asp-action="ToggleUserRole" method="post" class="d-inline">
+                                            @Html.AntiForgeryToken()
+                                            <input type="hidden" name="userId" value="@user.Id" />
+                                            <button type="submit" class="btn btn-sm @(isAdmin ? "btn-outline-secondary" : "btn-outline-dark")"
+                                                    onclick="return confirm('@(isAdmin ? "Demote this user from admin?" : "Promote this user to admin?")');">
+                                                @(isAdmin ? "Demote" : "Make Admin")
+                                            </button>
+                                        </form>
+
+                                        @if (!isAdmin)
+                                        {
+                                            <form asp-action="ToggleBlockUser" method="post" class="d-inline">
+                                                @Html.AntiForgeryToken()
+                                                <input type="hidden" name="userId" value="@user.Id" />
+                                                <button type="submit" class="btn btn-sm @(user.IsBlocked ? "btn-success" : "btn-warning")">
+                                                    @(user.IsBlocked ? "Unblock" : "Block")
+                                                </button>
+                                            </form>
+
+                                            <form asp-action="DeleteUser" method="post" class="d-inline" onsubmit="return confirm('Delete this user permanently?');">
+                                                @Html.AntiForgeryToken()
+                                                <input type="hidden" name="userId" value="@user.Id" />
+                                                <button type="submit" class="btn btn-sm btn-danger">Delete</button>
+                                            </form>
+                                        }
+                                    </div>
+                                }
+                                else
+                                {
+                                    <span class="text-muted small">—</span>
+                                }
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>

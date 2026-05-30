@@ -1,0 +1,15 @@
+@model EcommerceApp.Models.Category
+@{ 
+    ViewData["Title"] = "Create Category"; 
+    Layout = "_AdminLayout"; 
+}
+<form method="post" enctype="multipart/form-data" class="border p-4 mt-4">
+    <h2>Create Category</h2><hr/>
+    <div class="mb-3"><label asp-for="Name"></label><input asp-for="Name" class="form-control" /><span asp-validation-for="Name" class="text-danger"></span></div>
+    <div class="mb-3"><label asp-for="Description"></label><textarea asp-for="Description" class="form-control"></textarea></div>
+    <div class="mb-3"><label asp-for="DisplayOrder"></label><input asp-for="DisplayOrder" class="form-control" /></div>
+    <div class="mb-3"><label>Category Image</label><input type="file" name="file" class="form-control" accept="image/*" /></div>
+    <button type="submit" class="btn btn-primary">Create</button>
+    <a asp-action="Index" class="btn btn-secondary">Back</a>
+</form>
+@section Scripts { <partial name="_ValidationScriptsPartial" /> }

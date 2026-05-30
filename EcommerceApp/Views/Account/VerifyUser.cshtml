@@ -1,0 +1,47 @@
+@{
+    ViewData["Title"] = "Verify User";
+}
+
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-md-6 col-lg-5">
+            <div class="card shadow border-0 rounded-lg">
+                <div class="card-header bg-info text-white text-center py-4">
+                    <h3 class="mb-0 fw-bold">Verify Your Email</h3>
+                </div>
+                <div class="card-body p-4 p-md-5 text-center">
+                    <p class="text-muted mb-2">Enter the 6-digit code sent to:</p>
+                    <p class="fw-bold text-primary mb-4">@ViewBag.Email</p>
+
+                    @if (TempData["SuccessMessage"] != null)
+                    {
+                        <div class="alert alert-success">@TempData["SuccessMessage"]</div>
+                    }
+                    @if (TempData["ErrorMessage"] != null)
+                    {
+                        <div class="alert alert-danger">@TempData["ErrorMessage"]</div>
+                    }
+
+                    <form asp-action="VerifyUser" asp-controller="Account" method="post">
+                        @Html.AntiForgeryToken()
+                        <input type="hidden" name="email" value="@ViewBag.Email" />
+
+                        <div class="mb-4">
+                            <label for="verifyCode" class="form-label fw-bold">Verification Code</label>
+                            <input type="text" id="verifyCode" name="verifyCode" class="form-control text-center fs-4" placeholder="123456" maxlength="6" required />
+                        </div>
+
+                        <div class="d-grid gap-2">
+                            <button type="submit" class="btn btn-info text-white py-2 fw-bold">Verify Code</button>
+                        </div>
+                    </form>
+                </div>
+                <div class="card-footer text-center py-3 bg-light">
+                    <div class="small">
+                        <a asp-action="Login" asp-controller="Account" class="text-decoration-none">Back to Login</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

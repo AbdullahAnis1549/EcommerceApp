@@ -1,0 +1,31 @@
+@model IEnumerable<EcommerceApp.Models.Wishlist>
+@{ ViewData["Title"] = "Wishlist"; }
+<div class="container py-5">
+    <h2 class="fw-bold mb-4">💖 My Wishlist</h2>
+    @if (TempData["SuccessMessage"] != null) { <div class="alert alert-success">@TempData["SuccessMessage"]</div> }
+    @if (!Model.Any()) {
+        <p class="text-muted">Your wishlist is empty. <a asp-controller="Home" asp-action="Shop">Browse products</a></p>
+    } else {
+        <div class="row g-4">
+        @foreach (var item in Model) {
+            <div class="col-md-4">
+                <div class="card border-0 shadow-sm h-100">
+                    @if (!string.IsNullOrEmpty(item.Product.ImageUrl)) {
+                        <img src="@item.Product.ImageUrl" class="card-img-top" style="height:180px;object-fit:cover;" />
+                    }
+                    <div class="card-body">
+                        <h6 class="fw-bold">@item.Product.Title</h6>
+                        <p class="text-primary fw-bold">$@item.Product.Price.ToString("N2")</p>
+                        <a asp-controller="Home" asp-action="Details" asp-route-id="@item.ProductId" class="btn btn-sm btn-primary">View</a>
+                        <form asp-action="Remove" method="post" class="d-inline">
+                            @Html.AntiForgeryToken()
+                            <input type="hidden" name="id" value="@item.Id" />
+                            <button type="submit" class="btn btn-sm btn-outline-danger">Remove</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        }
+        </div>
+    }
+</div>

@@ -1,0 +1,81 @@
+@model List<EcommerceApp.Models.Product>
+@using EcommerceApp.Models
+@{
+    ViewData["Title"] = "Inventory";
+}
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <div>
+        <h2 class="fw-bold mb-0">Stock Management</h2>
+        <p class="text-muted mb-0">Products at or below @SD.LowStockThreshold units are highlighted.</p>
+    </div>
+    <a asp-action="Dashboard" class="btn btn-secondary">Back to Dashboard</a>
+</div>
+
+@if (TempData["SuccessMessage"] != null)
+{
+    <div class="alert alert-success alert-dismissible fade show">@TempData["SuccessMessage"]<button type="button" class="btn-close" data-bs-dismiss="alert"></button></div>
+}
+@if (TempData["ErrorMessage"] != null)
+{
+    <div class="alert alert-danger alert-dismissible fade show">@TempData["ErrorMessage"]<button type="button" class="btn-close" data-bs-dismiss="alert"></button></div>
+}
+
+<div class="card shadow-sm">
+    <div class="card-body p-0">
+        <div class="table-responsive">
+            <table class="table table-hover mb-0 align-middle">
+                <thead class="table-light">
+                    <tr>
+                        <th>Product</th>
+                        <th>Category</th>
+                        <th>Price</th>
+                        <th>Stock</th>
+                        <th>Update</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var product in Model)
+                    {
+                        var lowStock = product.StockQuantity <= SD.LowStockThreshold;
+                        <tr class="@(lowStock ? "table-warning" : "")">
+                            <td>
+                                <div class="d-flex align-items-center gap-2">
+                                    @if (!string.IsNullOrEmpty(product.ImageUrl))
+                                    {
+                                        <img src="@product.ImageUrl" alt="" width="40" height="40" class="rounded object-fit-cover" />
+                                    }
+                                    <span class="fw-semibold">@product.Title</span>
+                                </div>
+                            </td>
+                            <td>@(product.Category?.Name ?? "—")</td>
+                            <td>$@product.Price.ToString("N2")</td>
+                            <td>
+                                @if (product.StockQuantity == 0)
+                                {
+                                    <span class="badge bg-danger">Out of stock</span>
+                                }
+                                else if (lowStock)
+                                {
+                                    <span class="badge bg-warning text-dark">@product.StockQuantity left</span>
+                                }
+                                else
+                                {
+                                    <span class="badge bg-success">@product.StockQuantity</span>
+                                }
+                            </td>
+                            <td>
+                                <form asp-action="UpdateStock" method="post" class="d-flex gap-2 align-items-center">
+                                    @Html.AntiForgeryToken()
+                                    <input type="hidden" name="productId" value="@product.Id" />
+                                    <input type="number" name="stockQuantity" value="@product.StockQuantity" min="0" class="form-control form-control-sm" style="width: 90px;" required />
+                                    <button type="submit" class="btn btn-sm btn-primary">Save</button>
+                                </form>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,37 @@
+@model int
+@{
+    ViewData["Title"] = "Order Confirmed";
+}
+
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+            <div class="card border-0 shadow-lg rounded-4 text-center overflow-hidden">
+                <div class="card-body p-5">
+                    <div class="display-1 mb-3">✅</div>
+                    <h1 class="fw-bold text-success mb-3">Payment Successful!</h1>
+                    <p class="text-muted fs-5 mb-4">
+                        Thank you for your order. Your payment was processed securely through Stripe.
+                    </p>
+
+                    <div class="bg-light rounded-4 p-4 mb-4">
+                        <p class="text-muted small mb-1">Order ID</p>
+                        <h2 class="fw-bold text-primary mb-0">#@Model</h2>
+                    </div>
+
+                    <div class="d-flex flex-column flex-sm-row gap-3 justify-content-center">
+                        <a asp-controller="Order" asp-action="Details" asp-route-orderId="@Model"
+                           class="btn btn-outline-primary rounded-pill px-4 py-2 fw-semibold">
+                            View Order Details
+                        </a>
+                        <a asp-controller="Home" asp-action="Shop"
+                           class="btn btn-primary rounded-pill px-4 py-2 fw-semibold"
+                           style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border: none;">
+                            Continue Shopping
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

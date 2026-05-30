@@ -1,0 +1,112 @@
+========================================================================
+             E-COMMERCE APP DEVELOPMENT PLAN (DAY 2 TO DAY 7)
+========================================================================
+
+Yeh plan aapki requirement ke mutabiq design kiya gaya hai. Is plan ko aap kal se shuru kar sakte hain aur rozana ek specific milestone achieve karenge. Har din ka ek main goal aur uske associated revision topics hain.
+
+------------------------------------------------------------------------
+👉 DAY 2: Category CRUD
+------------------------------------------------------------------------
+🎯 Goals (What to Create):
+  - Category Model (Fields: Id, Name, Description, DisplayOrder, etc.)
+  - CategoryController (Endpoints: Index, Create, Edit, Delete)
+  - Razor Views for Category (Index list, Create form, Edit form, Delete confirmation)
+
+📚 Revision & Core Concepts to Learn/Practice:
+  - Basic CRUD Operations in ASP.NET Core MVC
+  - Entity Framework Core basics (DbSet, Add, Update, Remove)
+  - Server-side & Client-side Validation (Data Annotations)
+  - Razor Views syntax (@model, Tag Helpers like asp-action, asp-for)
+
+------------------------------------------------------------------------
+👉 DAY 3: Product CRUD + Cloudinary Integration
+------------------------------------------------------------------------
+🎯 Goals (What to Create):
+  - Product Model (Fields: Id, Title, Price, Description, ImageUrl, CategoryId)
+  - ProductController (++Endpoints: Index, Upsert, Delete)
+  - Image Upload Integration using the existing CloudinaryService
+  - Link Product to Category (Dropdown in Create/Edit view)
+
+📚 Revision & Core Concepts to Learn/Practice:
+  - File Upload handling (IFormFile)
+  - Navigation Properties (Product -> Category)
+  - Eager Loading using .Include() to get Category details with Products
+  - Dropdown Binding (SelectListItem, ViewBag/ViewData)
+
+------------------------------------------------------------------------
+👉 DAY 4: Database Relationships + UserProfile
+------------------------------------------------------------------------
+🎯 Goals (What to Create):
+  - UserProfile / ApplicationUser Table (Extending Identity or existing User table)
+  - Establish a One-to-One relation between User and UserProfile
+  - Configure relationships precisely in ApplicationDbContext
+
+📚 Revision & Core Concepts to Learn/Practice:
+  - Fluent API for complex database configurations (OnModelCreating)
+  - Understanding Database Relationships (1-to-1, 1-to-many, many-to-many)
+  - Foreign Keys constraints and Cascading Deletes
+
+------------------------------------------------------------------------
+👉 DAY 5: Cart System Implementation
+------------------------------------------------------------------------
+🎯 Goals (What to Create):
+  - Cart Model (ShoppingCart: ProductId, Count, UserId)
+  - Add to Cart functionality (Button on Product display page)
+  - Remove/Update Cart items functionality
+  - Cart Summary View
+
+📚 Revision & Core Concepts to Learn/Practice:
+  - Advanced LINQ queries (Where, Select, Sum, Count)
+  - Managing User Sessions securely
+  - Optimized Entity Framework Queries
+
+------------------------------------------------------------------------
+👉 DAY 6: Orders & Many-to-Many Relationships
+------------------------------------------------------------------------
+🎯 Goals (What to Create):
+  - OrderHeader Model (Order tracking, Shipping details, Total Price)
+  - OrderDetail Model (Mapping table for Products inside an Order)
+  - Checkout Process (Moving Cart items to Order)
+
+📚 Revision & Core Concepts to Learn/Practice:
+  - Database Transactions (Ensuring atomicity when creating an order)
+  - Eager Loading multiple levels using .Include() and .ThenInclude()
+  - SQL Joins and understanding how EF handles them
+  - Aggregate functions (Calculating order totals)
+
+------------------------------------------------------------------------
+👉 DAY 7: Triggers, Admin Dashboard & Final Polish
+------------------------------------------------------------------------
+🎯 Goals (What to Create):
+  - Custom SQL Trigger (e.g., automatically updating inventory/stock when an order is placed)
+  - Admin Dashboard UI (Overview of total sales, users, orders)
+  - Final End-to-End Testing of the Application
+  - Project Documentation (README)
+
+📚 Revision & Core Concepts to Learn/Practice:
+  - Writing raw SQL Triggers and executing them via EF Core Migrations
+  - Database Constraints
+  - Debugging Techniques (Breakpoints, Exception Handling)
+  - Complete MVC Request/Response Flow Review
+
+------------------------------------------------------------------------
+👉 DAY 8: Comprehensive Admin Panel
+------------------------------------------------------------------------
+🎯 Goals (What to Create):
+  - Admin Role Implementation & Authorization restrictions.
+  - Comprehensive Admin Panel to manage Users (View, Delete, Block/Unblock).
+  - Manage all Products, Categories, and Orders from a single interface.
+  - Analytics & Reports (Total Revenue, Active Users, Recent Orders).
+
+📚 Revision & Core Concepts to Learn/Practice:
+  - Role-Based Authorization in ASP.NET Core ([Authorize(Roles = "Admin")]).
+  - Advanced Routing (Areas for Admin).
+  - Chart.js / Data visualization for reports.
+  - Complex CRUD operations crossing multiple entities.
+
+========================================================================
+💡 TIPS FOR SUCCESS:
+- Har din ka kaam complete hone par "dotnet ef migrations add" aur "update-database" zaroor chalayen (agar models me changes ki hain).
+- Jo bhi error aaye, usay araam se debug karein aur logs parh kar solve karein.
+- Har step ke baad chote commits (e.g., git commit -m "Day 2: Category CRUD complete") karein.
+========================================================================

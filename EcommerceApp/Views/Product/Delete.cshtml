@@ -1,0 +1,50 @@
+@model EcommerceApp.Models.Product
+
+@{ 
+    ViewData["Title"] = "Delete Product"; 
+    Layout = "_AdminLayout"; 
+}
+
+<form method="post" asp-action="Delete">
+    <input asp-for="Id" hidden />
+    <div class="border p-3 mt-4 row">
+        <div class="row pb-2">
+            <h2 class="text-primary">Delete Product</h2>
+            <hr />
+        </div>
+        
+        <div class="alert alert-danger" role="alert">
+            Are you sure you want to permanently delete this product?
+        </div>
+
+        <div class="col-9">
+            <div class="mb-3">
+                <label asp-for="Title"></label>
+                <input asp-for="Title" disabled class="form-control" />
+            </div>
+            <div class="mb-3">
+                <label asp-for="Description"></label>
+                <textarea asp-for="Description" disabled class="form-control" rows="3"></textarea>
+            </div>
+            <div class="mb-3">
+                <label asp-for="Price"></label>
+                <input asp-for="Price" disabled class="form-control" />
+            </div>
+            <div class="mb-3">
+                <label>Category</label>
+                <input asp-for="Category.Name" disabled class="form-control" />
+            </div>
+
+            <button type="submit" class="btn btn-danger" style="width:150px">Delete</button>
+            <a asp-controller="Product" asp-action="Index" class="btn btn-secondary" style="width:150px">
+                Back to List
+            </a>
+        </div>
+        <div class="col-3">
+            @if (!string.IsNullOrEmpty(Model.ImageUrl))
+            {
+                <img src="@Model.ImageUrl" width="100%" style="border-radius:5px; border:1px solid #bbb9b9" />
+            }
+        </div>
+    </div>
+</form>

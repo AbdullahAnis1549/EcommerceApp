@@ -1,0 +1,317 @@
+@model EcommerceApp.ViewModels.ShoppingCartVM
+@{
+    ViewData["Title"] = "Checkout Summary";
+    var stripePublishableKey = ViewBag.StripePublishableKey as string ?? "";
+    var isStripeTestMode = stripePublishableKey.StartsWith("pk_test_", StringComparison.OrdinalIgnoreCase);
+}
+
+<form id="checkout-form" method="post">
+    @Html.AntiForgeryToken()
+    <div class="container py-5">
+        @if (TempData["ErrorMessage"] != null)
+        {
+            <div class="alert alert-danger border-0 shadow-sm rounded-3">@TempData["ErrorMessage"]</div>
+        }
+        <div id="checkout-alert" class="alert alert-danger border-0 shadow-sm rounded-3 d-none" role="alert"></div>
+
+        <nav aria-label="Checkout steps" class="mb-4">
+            <ol class="breadcrumb justify-content-center bg-light rounded-pill px-4 py-2 mb-0">
+                <li class="breadcrumb-item"><a asp-action="Index" class="text-decoration-none">Cart</a></li>
+                <li class="breadcrumb-item active" aria-current="page">Shipping &amp; Payment</li>
+                <li class="breadcrumb-item text-muted">Confirmation</li>
+            </ol>
+        </nav>
+
+        <h2 class="fw-bold mb-4">📦 Checkout</h2>
+
+        <div class="row">
+            <div class="col-lg-7 mb-4 mb-lg-0">
+                <div class="card border-0 shadow-sm rounded-4 mb-4">
+                    <div class="card-body p-4 p-md-5">
+                        <h4 class="fw-bold mb-4">Shipping Details</h4>
+
+                        <div class="row g-3">
+                            <div class="col-12">
+                                <label class="form-label fw-semibold text-muted small">Full Name</label>
+                                <input asp-for="OrderHeader.Name" class="form-control bg-light border-0" />
+                                <span asp-validation-for="OrderHeader.Name" class="text-danger small"></span>
+                            </div>
+
+                            <div class="col-12">
+                                <label class="form-label fw-semibold text-muted small">Phone Number</label>
+                                <input asp-for="OrderHeader.PhoneNumber" class="form-control bg-light border-0" />
+                                <span asp-validation-for="OrderHeader.PhoneNumber" class="text-danger small"></span>
+                            </div>
+
+                            <div class="col-12">
+                                <label class="form-label fw-semibold text-muted small">Street Address</label>
+                                <input asp-for="OrderHeader.StreetAddress" class="form-control bg-light border-0" />
+                                <span asp-validation-for="OrderHeader.StreetAddress" class="text-danger small"></span>
+                            </div>
+
+                            <div class="col-sm-6">
+                                <label class="form-label fw-semibold text-muted small">City</label>
+                                <input asp-for="OrderHeader.City" class="form-control bg-light border-0" />
+                                <span asp-validation-for="OrderHeader.City" class="text-danger small"></span>
+                            </div>
+
+                            <div class="col-sm-6">
+                                <label class="form-label fw-semibold text-muted small">State</label>
+                                <input asp-for="OrderHeader.State" class="form-control bg-light border-0" />
+                                <span asp-validation-for="OrderHeader.State" class="text-danger small"></span>
+                            </div>
+
+                            <div class="col-sm-6">
+                                <label class="form-label fw-semibold text-muted small">Postal Code</label>
+                                <input asp-for="OrderHeader.PostalCode" class="form-control bg-light border-0" />
+                                <span asp-validation-for="OrderHeader.PostalCode" class="text-danger small"></span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="payment-section" class="card border-0 shadow-sm rounded-4 d-none">
+                    <div class="card-body p-4 p-md-5">
+                        <h4 class="fw-bold mb-4">Payment Details</h4>
+                        <p class="text-muted small mb-4">Enter your card details below. Payments are processed securely by Stripe.</p>
+
+                        @if (isStripeTestMode)
+                        {
+                            <div class="alert alert-warning border-0 rounded-3 mb-4">
+                                <strong>Stripe test mode</strong> — random 16 digits (jaise <code>1234 1234 1234 1234</code>) <strong>kaam nahi karte</strong>.
+                                <hr class="my-2" />
+                                <p class="mb-1 small">Yeh details copy karke daalein:</p>
+                                <ul class="small mb-0 ps-3">
+                                    <li><strong>Card:</strong> <code class="user-select-all">4242 4242 4242 4242</code></li>
+                                    <li><strong>Expiry:</strong> koi future date (e.g. <code>12/34</code>)</li>
+                                    <li><strong>CVC:</strong> koi 3 digits (e.g. <code>123</code>)</li>
+                                </ul>
+                            </div>
+                        }
+
+                        <div class="mb-3">
+                            <label for="cardholder-name" class="form-label fw-semibold text-muted small">Card Holder Name</label>
+                            <input type="text" id="cardholder-name" class="form-control bg-light border-0" placeholder="Name on card" autocomplete="cc-name" />
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label fw-semibold text-muted small">Card Number</label>
+                            <div id="card-number" class="stripe-field form-control bg-light border-0 py-3"></div>
+                        </div>
+
+                        <div class="row g-3">
+                            <div class="col-sm-6">
+                                <label class="form-label fw-semibold text-muted small">Expiry Date</label>
+                                <div id="card-expiry" class="stripe-field form-control bg-light border-0 py-3"></div>
+                            </div>
+                            <div class="col-sm-6">
+                                <label class="form-label fw-semibold text-muted small">CVC</label>
+                                <div id="card-cvc" class="stripe-field form-control bg-light border-0 py-3"></div>
+                            </div>
+                        </div>
+
+                        <div id="card-errors" class="text-danger small mt-3" role="alert"></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-lg-5">
+                <div class="card border-0 shadow-sm rounded-4 sticky-top" style="top: 20px;">
+                    <div class="card-body p-4 p-md-5">
+                        <h4 class="fw-bold mb-4">Order Summary</h4>
+
+                        <ul class="list-group list-group-flush mb-4">
+                            @foreach (var item in Model.ListCart)
+                            {
+                                <li class="list-group-item d-flex justify-content-between align-items-center px-0 bg-transparent border-bottom border-light">
+                                    <div>
+                                        <h6 class="my-0 fw-semibold">@item.Product.Title</h6>
+                                        <small class="text-muted">Quantity: @item.Count</small>
+                                    </div>
+                                    <span class="text-muted fw-semibold">$@((item.Price * item.Count).ToString("N2"))</span>
+                                </li>
+                            }
+                        </ul>
+
+                        <div class="d-flex justify-content-between align-items-center mb-4 bg-light p-3 rounded-3">
+                            <h5 class="fw-bold mb-0">Total</h5>
+                            <h4 class="fw-bold text-primary mb-0">$@Model.OrderHeader.OrderTotal.ToString("N2")</h4>
+                        </div>
+
+                        <div class="alert alert-success border-0 shadow-sm rounded-3 mb-4">
+                            <div class="d-flex">
+                                <div class="fs-4 me-3">💳</div>
+                                <div class="small">
+                                    <p class="mb-0"><strong>Secure payment:</strong> Pay with your credit or debit card on this page.</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <button type="submit" id="place-order-btn" class="btn btn-primary w-100 py-3 rounded-pill fw-bold shadow-sm fs-5" style="background: linear-gradient(135deg, #28a745 0%, #20c997 100%); border: none;">
+                            Place Order &amp; Pay
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</form>
+
+@section Scripts {
+    <style>
+        .stripe-field { min-height: 44px; }
+        .StripeElement--focus { outline: none; }
+        .StripeElement--invalid { border-color: #dc3545 !important; }
+    </style>
+    <partial name="_ValidationScriptsPartial" />
+    <script src="https://js.stripe.com/v3/"></script>
+    <script>
+        (function () {
+            const publishableKey = @Html.Raw(System.Text.Json.JsonSerializer.Serialize(stripePublishableKey));
+            const form = document.getElementById('checkout-form');
+            const paymentSection = document.getElementById('payment-section');
+            const placeOrderBtn = document.getElementById('place-order-btn');
+            const checkoutAlert = document.getElementById('checkout-alert');
+            const cardErrors = document.getElementById('card-errors');
+            const cardholderNameInput = document.getElementById('cardholder-name');
+
+            let paymentSectionVisible = false;
+            let stripe = null;
+            let cardNumberElement = null;
+
+            function showError(message) {
+                checkoutAlert.textContent = message;
+                checkoutAlert.classList.remove('d-none');
+            }
+
+            function hideError() {
+                checkoutAlert.classList.add('d-none');
+                checkoutAlert.textContent = '';
+            }
+
+            function initStripeElements() {
+                if (stripe) return;
+
+                stripe = Stripe(publishableKey);
+                const elements = stripe.elements();
+                const style = {
+                    base: {
+                        fontSize: '16px',
+                        color: '#212529',
+                        '::placeholder': { color: '#6c757d' }
+                    },
+                    invalid: { color: '#dc3545' }
+                };
+
+                cardNumberElement = elements.create('cardNumber', { style });
+                const cardExpiryElement = elements.create('cardExpiry', { style });
+                const cardCvcElement = elements.create('cardCvc', { style });
+
+                cardNumberElement.mount('#card-number');
+                cardExpiryElement.mount('#card-expiry');
+                cardCvcElement.mount('#card-cvc');
+
+                cardNumberElement.on('change', function (event) {
+                    cardErrors.textContent = event.error ? event.error.message : '';
+                });
+            }
+
+            function revealPaymentSection() {
+                if (!publishableKey) {
+                    showError('Stripe is not configured. Add your publishable key in appsettings.');
+                    return;
+                }
+
+                if (!$(form).valid()) {
+                    return;
+                }
+
+                initStripeElements();
+                paymentSection.classList.remove('d-none');
+                paymentSectionVisible = true;
+
+                const nameField = form.querySelector('[name="OrderHeader.Name"]');
+                if (nameField?.value && !cardholderNameInput.value) {
+                    cardholderNameInput.value = nameField.value;
+                }
+
+                paymentSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            }
+
+            async function processPayment() {
+                hideError();
+                cardErrors.textContent = '';
+
+                const cardholderName = cardholderNameInput.value.trim();
+                if (!cardholderName) {
+                    cardErrors.textContent = 'Please enter the card holder name.';
+                    cardholderNameInput.focus();
+                    return;
+                }
+
+                placeOrderBtn.disabled = true;
+                placeOrderBtn.textContent = 'Processing payment...';
+
+                try {
+                    const formData = new FormData(form);
+                    const createResponse = await fetch('@Url.Action("CreatePayment", "Cart")', {
+                        method: 'POST',
+                        body: formData
+                    });
+
+                    const createResult = await createResponse.json();
+                    if (!createResponse.ok || createResult.error) {
+                        showError(createResult.error || 'Could not start payment. Please try again.');
+                        return;
+                    }
+
+                    const confirmResult = await stripe.confirmCardPayment(createResult.clientSecret, {
+                        payment_method: {
+                            card: cardNumberElement,
+                            billing_details: { name: cardholderName }
+                        }
+                    });
+
+                    if (confirmResult.error) {
+                        cardErrors.textContent = confirmResult.error.message;
+                        return;
+                    }
+
+                    const completeData = new FormData();
+                    completeData.append('paymentIntentId', confirmResult.paymentIntent.id);
+                    completeData.append('__RequestVerificationToken', form.querySelector('input[name="__RequestVerificationToken"]').value);
+
+                    const completeResponse = await fetch('@Url.Action("CompletePayment", "Cart")', {
+                        method: 'POST',
+                        body: completeData
+                    });
+
+                    const completeResult = await completeResponse.json();
+                    if (!completeResponse.ok || completeResult.error) {
+                        showError(completeResult.error || 'Payment succeeded but order could not be finalized.');
+                        return;
+                    }
+
+                    window.location.href = completeResult.redirectUrl;
+                } catch {
+                    showError('Something went wrong. Please try again.');
+                } finally {
+                    placeOrderBtn.disabled = false;
+                    placeOrderBtn.textContent = 'Place Order & Pay';
+                }
+            }
+
+            form.addEventListener('submit', function (e) {
+                e.preventDefault();
+                hideError();
+
+                if (!paymentSectionVisible) {
+                    revealPaymentSection();
+                    return;
+                }
+
+                processPayment();
+            });
+        })();
+    </script>
+}

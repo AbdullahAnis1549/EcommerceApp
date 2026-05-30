@@ -1,0 +1,16 @@
+@model EcommerceApp.Models.Product
+@{
+    var sizeClass = ViewData["PriceSize"] as string ?? "";
+}
+<div class="d-flex flex-wrap align-items-center gap-2 @sizeClass">
+    @if (Model.HasActiveDiscount)
+    {
+        <span class="shopper-price mb-0">$@Model.Price.ToString("N2")</span>
+        <span class="text-muted text-decoration-line-through small mb-0">$@Model.ListPrice!.Value.ToString("N2")</span>
+        <span class="badge bg-danger rounded-pill">-@Model.DiscountPercent%</span>
+    }
+    else
+    {
+        <span class="shopper-price mb-0">$@Model.Price.ToString("N2")</span>
+    }
+</div>

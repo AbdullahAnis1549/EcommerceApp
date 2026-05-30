@@ -1,0 +1,80 @@
+@model List<EcommerceApp.Models.ContactMessage>
+@{
+    ViewData["Title"] = "Contact Messages";
+}
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <div>
+        <h2 class="fw-bold mb-0">Contact Messages</h2>
+        <p class="text-muted mb-0">Messages submitted from the store contact form.</p>
+    </div>
+    <a asp-action="Dashboard" class="btn btn-secondary">Back to Dashboard</a>
+</div>
+
+@if (TempData["SuccessMessage"] != null)
+{
+    <div class="alert alert-success alert-dismissible fade show">@TempData["SuccessMessage"]<button type="button" class="btn-close" data-bs-dismiss="alert"></button></div>
+}
+@if (TempData["ErrorMessage"] != null)
+{
+    <div class="alert alert-danger alert-dismissible fade show">@TempData["ErrorMessage"]<button type="button" class="btn-close" data-bs-dismiss="alert"></button></div>
+}
+
+<div class="card shadow-sm">
+    <div class="card-body p-0">
+        <div class="table-responsive">
+            <table class="table table-hover mb-0">
+                <thead class="table-light">
+                    <tr>
+                        <th>Date</th>
+                        <th>Name</th>
+                        <th>Email</th>
+                        <th>Message</th>
+                        <th>Status</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @if (!Model.Any())
+                    {
+                        <tr><td colspan="6" class="text-center text-muted py-4">No messages yet.</td></tr>
+                    }
+                    @foreach (var msg in Model)
+                    {
+                        <tr class="@(msg.IsRead ? "" : "table-warning")">
+                            <td class="text-nowrap">@msg.CreatedAt.ToLocalTime().ToString("dd MMM yyyy HH:mm")</td>
+                            <td>@msg.Name</td>
+                            <td><a href="mailto:@msg.Email">@msg.Email</a></td>
+                            <td style="max-width: 320px;">@msg.Message</td>
+                            <td>
+                                @if (msg.IsRead)
+                                {
+                                    <span class="badge bg-secondary">Read</span>
+                                }
+                                else
+                                {
+                                    <span class="badge bg-primary">New</span>
+                                }
+                            </td>
+                            <td>
+                                @if (!msg.IsRead)
+                                {
+                                    <form asp-action="MarkMessageRead" method="post" class="d-inline">
+                                        @Html.AntiForgeryToken()
+                                        <input type="hidden" name="messageId" value="@msg.Id" />
+                                        <button type="submit" class="btn btn-sm btn-outline-success">Mark read</button>
+                                    </form>
+                                }
+                                <form asp-action="DeleteMessage" method="post" class="d-inline" onsubmit="return confirm('Delete this message?');">
+                                    @Html.AntiForgeryToken()
+                                    <input type="hidden" name="messageId" value="@msg.Id" />
+                                    <button type="submit" class="btn btn-sm btn-outline-danger">Delete</button>
+                                </form>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>

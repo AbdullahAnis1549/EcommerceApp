@@ -1,0 +1,109 @@
+@model EcommerceApp.Models.OrderHeader
+@using EcommerceApp.Models
+@{
+    ViewData["Title"] = "Order Details";
+    var orderDetails = ViewBag.OrderDetails as List<EcommerceApp.Models.OrderDetail>;
+    if (User.IsInRole("admin")) { Layout = "_AdminLayout"; }
+}
+
+<div class="container py-5">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2 class="fw-bold">📝 Order Summary <span class="text-primary">#@Model.Id</span></h2>
+        <a asp-action="Index" class="btn btn-outline-secondary rounded-pill px-4">← Back to Orders</a>
+    </div>
+
+    <div class="row">
+        <!-- Left Side: Order & Shipping Details -->
+        <div class="col-lg-7 mb-4 mb-lg-0">
+            <div class="card border-0 shadow-sm rounded-4 mb-4">
+                <div class="card-header bg-light py-3">
+                    <h5 class="fw-bold mb-0">Shipping Info</h5>
+                </div>
+                <div class="card-body p-4">
+                    <table class="table table-borderless mb-0">
+                        <tr><td class="text-muted fw-bold" style="width: 150px;">Name:</td><td>@Model.Name</td></tr>
+                        <tr><td class="text-muted fw-bold">Phone:</td><td>@Model.PhoneNumber</td></tr>
+                        <tr><td class="text-muted fw-bold">Address:</td><td>@Model.StreetAddress, @Model.City, @Model.State, @Model.PostalCode</td></tr>
+                        <tr><td class="text-muted fw-bold">Order Date:</td><td>@Model.OrderDate.ToString("dd MMM yyyy, hh:mm tt")</td></tr>
+                        <tr><td class="text-muted fw-bold">Order Status:</td>
+                            <td>
+                                <span class="badge bg-primary rounded-pill">@Model.OrderStatus</span>
+                            </td>
+                        </tr>
+                        <tr><td class="text-muted fw-bold">Payment Status:</td>
+                            <td>
+                                <span class="badge bg-success rounded-pill">@Model.PaymentStatus</span>
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Admin Action Controls (For Phase 3/Future) -->
+            @if (User.IsInRole("admin"))
+            {
+                <div class="card border-0 shadow-sm rounded-4 bg-light">
+                    <div class="card-body p-4">
+                        <h5 class="fw-bold mb-3">Admin Actions</h5>
+                        @if (TempData["success"] != null) { <div class="alert alert-success py-2">@TempData["success"]</div> }
+                        @if (TempData["error"] != null) { <div class="alert alert-danger py-2">@TempData["error"]</div> }
+                        <form asp-action="UpdateStatus" method="post" class="d-flex flex-wrap gap-2 align-items-end">
+                            @Html.AntiForgeryToken()
+                            <input type="hidden" name="orderId" value="@Model.Id" />
+                            <div>
+                                <label class="form-label small">Order Status</label>
+                                <select name="orderStatus" class="form-select">
+                                    <option value="@SD.StatusPending" selected="@(Model.OrderStatus == SD.StatusPending)">Pending</option>
+                                    <option value="@SD.StatusApproved" selected="@(Model.OrderStatus == SD.StatusApproved)">Approved</option>
+                                    <option value="@SD.StatusInProcess" selected="@(Model.OrderStatus == SD.StatusInProcess)">Processing</option>
+                                    <option value="@SD.StatusShipped" selected="@(Model.OrderStatus == SD.StatusShipped)">Shipped</option>
+                                    <option value="@SD.StatusCancelled" selected="@(Model.OrderStatus == SD.StatusCancelled)">Cancelled</option>
+                                    <option value="@SD.StatusRefunded" selected="@(Model.OrderStatus == SD.StatusRefunded)">Refunded</option>
+                                </select>
+                            </div>
+                            <button type="submit" class="btn btn-primary rounded-pill px-4">Update Status</button>
+                        </form>
+                    </div>
+                </div>
+            }
+        </div>
+
+        <!-- Right Side: Items Summary -->
+        <div class="col-lg-5">
+            <div class="card border-0 shadow-sm rounded-4 sticky-top" style="top: 20px;">
+                <div class="card-header bg-light py-3">
+                    <h5 class="fw-bold mb-0">Items Details</h5>
+                </div>
+                <div class="card-body p-4">
+                    <ul class="list-group list-group-flush mb-4">
+                        @foreach (var detail in orderDetails)
+                        {
+                            <li class="list-group-item d-flex justify-content-between align-items-center px-0 bg-transparent border-bottom border-light py-3">
+                                <div class="d-flex align-items-center">
+                                    @if (!string.IsNullOrEmpty(detail.Product.ImageUrl))
+                                    {
+                                        <img src="@detail.Product.ImageUrl" class="rounded me-3" style="width: 50px; height: 50px; object-fit: cover;" />
+                                    }
+                                    else
+                                    {
+                                        <div class="rounded me-3 d-flex align-items-center justify-content-center bg-light" style="width: 50px; height: 50px;">🖼️</div>
+                                    }
+                                    <div>
+                                        <h6 class="my-0 fw-semibold text-dark">@detail.Product.Title</h6>
+                                        <small class="text-muted">Price: $@detail.Price.ToString("N2") &times; @detail.Count</small>
+                                    </div>
+                                </div>
+                                <span class="text-muted fw-semibold">$@((detail.Price * detail.Count).ToString("N2"))</span>
+                            </li>
+                        }
+                    </ul>
+                    
+                    <div class="d-flex justify-content-between align-items-center bg-light p-3 rounded-3">
+                        <h5 class="fw-bold mb-0">Total</h5>
+                        <h4 class="fw-bold text-primary mb-0">$@Model.OrderTotal.ToString("N2")</h4>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

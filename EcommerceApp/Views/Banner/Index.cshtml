@@ -1,0 +1,24 @@
+@model List<EcommerceApp.Models.Banner>
+@{ ViewData["Title"] = "Banners"; }
+<div class="container p-3">
+    <div class="row pt-4"><div class="col-6"><h2 class="text-primary">Homepage Banners</h2></div>
+    <div class="col-6 text-end"><a asp-action="Upsert" class="btn btn-primary">+ Create Banner</a></div></div>
+    @if (TempData["success"] != null) { <div class="alert alert-success">@TempData["success"]</div> }
+    <table class="table table-bordered table-striped mt-3">
+        <thead><tr><th>Image</th><th>Title</th><th>Order</th><th>Active</th><th>Actions</th></tr></thead>
+        <tbody>
+        @foreach (var b in Model) {
+            <tr>
+                <td>@if (!string.IsNullOrEmpty(b.ImageUrl)) { <img src="@b.ImageUrl" style="width:100px;height:60px;object-fit:cover;border-radius:6px;" /> }</td>
+                <td>@b.Title<br/><small class="text-muted">@b.Subtitle</small></td>
+                <td>@b.DisplayOrder</td>
+                <td>@(b.IsActive ? "Yes" : "No")</td>
+                <td>
+                    <a asp-action="Upsert" asp-route-id="@b.Id" class="btn btn-sm btn-primary">Edit</a>
+                    <a asp-action="Delete" asp-route-id="@b.Id" class="btn btn-sm btn-danger">Delete</a>
+                </td>
+            </tr>
+        }
+        </tbody>
+    </table>
+</div>

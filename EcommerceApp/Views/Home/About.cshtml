@@ -1,0 +1,27 @@
+@model EcommerceApp.Models.AboutPage?
+@{
+    ViewData["Title"] = Model?.Title ?? "About Us";
+    var title = Model?.Title ?? "About Shopper.";
+    var subtitle = Model?.Subtitle ?? "Your trusted online store";
+    var body = Model?.Body ?? "We are a modern online store offering quality products with secure checkout and reliable support.";
+}
+
+<div class="container py-5">
+    <div class="row g-4 align-items-start">
+        @if (!string.IsNullOrEmpty(Model?.ImageUrl))
+        {
+            <div class="col-lg-5">
+                <img src="@Model.ImageUrl" alt="@title" class="img-fluid rounded-4 shadow-sm w-100" style="object-fit:cover;max-height:420px;" />
+            </div>
+        }
+        <div class="@(string.IsNullOrEmpty(Model?.ImageUrl) ? "col-12" : "col-lg-7")">
+            <p class="shopper-kicker mb-2">ABOUT</p>
+            <h1 class="fw-bold mb-3">@title</h1>
+            @if (!string.IsNullOrWhiteSpace(subtitle))
+            {
+                <p class="lead text-muted mb-4">@subtitle</p>
+            }
+            <div class="about-body text-muted" style="white-space:pre-wrap;line-height:1.75;">@body</div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,625 @@
+/* ── Shopper theme (reference: minimal retail, indigo + lavender) ── */
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap');
+
+:root {
+  --shopper-indigo: #283593;
+  --shopper-indigo-dark: #1a237e;
+  --shopper-blue: #3949ab;
+  --shopper-accent: #5c6bc0;
+  --shopper-lavender: #e8eaf6;
+  --shopper-lavender-strong: #c5cae9;
+  --shopper-surface: #f5f7fb;
+  --shopper-muted: #5f6368;
+  --shopper-heading: #1a1a2e;
+  --shopper-card-radius: 12px;
+  --shopper-font: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
+  --shopper-shadow: 0 2px 12px rgba(40, 53, 147, 0.08);
+  --shopper-shadow-hover: 0 12px 28px rgba(40, 53, 147, 0.12);
+}
+
+body.shopper-store {
+  font-family: var(--shopper-font);
+  color: var(--shopper-heading);
+  background: #fff;
+  padding-bottom: 0;
+}
+
+@media (max-width: 767.98px) {
+  body.shopper-store {
+    padding-bottom: 72px;
+  }
+}
+
+.shopper-topbar {
+  background: linear-gradient(90deg, var(--shopper-indigo-dark) 0%, var(--shopper-indigo) 100%);
+  color: rgba(255, 255, 255, 0.95);
+  font-size: 12px;
+  font-weight: 500;
+}
+.shopper-topbar a {
+  color: rgba(255, 255, 255, 0.9);
+  text-decoration: none;
+}
+.shopper-topbar a:hover {
+  color: #fff;
+  text-decoration: underline;
+}
+
+.shopper-logo-text {
+  font-weight: 800;
+  font-size: 1.35rem;
+  letter-spacing: -0.02em;
+  color: var(--shopper-heading);
+}
+.shopper-logo-icon {
+  width: 40px;
+  height: 40px;
+  border-radius: 10px;
+  background: linear-gradient(135deg, var(--shopper-indigo) 0%, var(--shopper-accent) 100%);
+  color: #fff;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.1rem;
+}
+
+.shopper-search-group {
+  border-radius: 10px;
+  overflow: hidden;
+  box-shadow: var(--shopper-shadow);
+  border: 1px solid #e8eaed;
+}
+.shopper-search-category {
+  max-width: 160px;
+  border: none !important;
+  background: #f8f9fc;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--shopper-muted);
+}
+.shopper-search-input {
+  border: none !important;
+  font-size: 14px;
+}
+.shopper-search-input:focus {
+  box-shadow: none !important;
+}
+.shopper-search-submit {
+  background: var(--shopper-indigo) !important;
+  color: #fff !important;
+  border: none !important;
+  padding: 0 1.25rem;
+  border-radius: 0 !important;
+}
+.shopper-search-submit:hover {
+  background: var(--shopper-indigo-dark) !important;
+  color: #fff !important;
+}
+
+.shopper-action-icon-link {
+  color: var(--shopper-heading);
+  font-size: 1.35rem;
+  line-height: 1;
+}
+.shopper-action-icon-link:hover {
+  color: var(--shopper-indigo);
+}
+.shopper-badge {
+  position: absolute;
+  top: -6px;
+  right: -8px;
+  min-width: 18px;
+  height: 18px;
+  padding: 0 5px;
+  font-size: 10px;
+  font-weight: 700;
+  line-height: 18px;
+  text-align: center;
+  background: var(--shopper-indigo);
+  color: #fff;
+  border-radius: 999px;
+}
+.shopper-cart-total {
+  color: var(--shopper-indigo);
+}
+
+.shopper-account-btn {
+  border: 1px solid #e8eaed !important;
+  border-radius: 10px !important;
+  background: #fff !important;
+  font-size: 14px;
+}
+.shopper-avatar-sm {
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  background: var(--shopper-lavender);
+  color: var(--shopper-indigo);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+.shopper-dropdown-menu {
+  border-radius: 12px;
+  border: none;
+  min-width: 200px;
+}
+
+.shopper-btn-primary {
+  background: var(--shopper-indigo) !important;
+  border: none !important;
+  border-radius: 10px !important;
+  font-weight: 600;
+  color: #fff !important;
+}
+.shopper-btn-primary:hover {
+  background: var(--shopper-indigo-dark) !important;
+  color: #fff !important;
+}
+.shopper-btn-outline {
+  border: 1px solid #dadce0 !important;
+  border-radius: 10px !important;
+  font-weight: 600;
+  color: var(--shopper-heading) !important;
+  background: #fff !important;
+}
+
+.shopper-subnav-links .nav-link {
+  color: var(--shopper-muted);
+  font-weight: 600;
+  font-size: 13px;
+  border-radius: 8px;
+}
+.shopper-subnav-links .nav-link:hover,
+.shopper-subnav-links .nav-link.active {
+  color: var(--shopper-indigo);
+  background: var(--shopper-lavender);
+}
+
+.shopper-hero {
+  position: relative;
+  border-radius: 20px;
+  overflow: hidden;
+  background: linear-gradient(120deg, #f3e5f5 0%, var(--shopper-lavender) 40%, #fff 100%);
+  min-height: 280px;
+}
+.shopper-hero-orb {
+  position: absolute;
+  width: 420px;
+  height: 420px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(197, 202, 233, 0.85) 0%, rgba(248, 249, 252, 0) 70%);
+  right: -80px;
+  top: -100px;
+  pointer-events: none;
+}
+.shopper-kicker {
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 0.12em;
+  color: var(--shopper-accent);
+}
+.shopper-hero h1 {
+  font-weight: 800;
+  letter-spacing: -0.03em;
+  color: var(--shopper-heading);
+  line-height: 1.15;
+}
+
+.shopper-btn-cta {
+  background: var(--shopper-indigo) !important;
+  color: #fff !important;
+  font-weight: 700;
+  padding: 0.65rem 1.5rem;
+  border-radius: 12px !important;
+  border: none !important;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+}
+.shopper-btn-cta:hover {
+  background: var(--shopper-indigo-dark) !important;
+  color: #fff !important;
+}
+
+.shopper-cat-strip {
+  display: flex;
+  gap: 0.75rem;
+  overflow-x: auto;
+  padding-bottom: 0.35rem;
+  scrollbar-width: thin;
+}
+.shopper-cat-card {
+  flex: 0 0 auto;
+  width: 120px;
+  background: #fff;
+  border: 1px solid #e8eaed;
+  border-radius: var(--shopper-card-radius);
+  padding: 1rem 0.75rem;
+  text-align: center;
+  text-decoration: none;
+  color: var(--shopper-heading);
+  transition: box-shadow 0.2s, border-color 0.2s, transform 0.2s;
+}
+.shopper-cat-card:hover {
+  border-color: var(--shopper-lavender-strong);
+  box-shadow: var(--shopper-shadow-hover);
+  transform: translateY(-3px);
+  color: var(--shopper-indigo);
+}
+.shopper-cat-card .shopper-cat-icon {
+  width: 48px;
+  height: 48px;
+  margin: 0 auto 0.5rem;
+  border-radius: 50%;
+  background: var(--shopper-lavender);
+  color: var(--shopper-indigo);
+  font-size: 1.35rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.shopper-trust-card {
+  background: var(--shopper-surface);
+  border-radius: var(--shopper-card-radius);
+  padding: 1.25rem 1rem;
+  text-align: center;
+  border: 1px solid #eef1f6;
+}
+.shopper-trust-card i {
+  font-size: 1.75rem;
+  color: var(--shopper-indigo);
+}
+.shopper-trust-card h6 {
+  font-weight: 700;
+  font-size: 13px;
+  margin-top: 0.65rem;
+  margin-bottom: 0.2rem;
+}
+.shopper-trust-card p {
+  font-size: 12px;
+  color: var(--shopper-muted);
+  margin: 0;
+}
+
+.shopper-product-card {
+  border-radius: var(--shopper-card-radius);
+  border: 1px solid #eef1f6;
+  overflow: hidden;
+  background: #fff;
+  transition: box-shadow 0.22s, transform 0.22s;
+  height: 100%;
+}
+.shopper-product-card:hover {
+  box-shadow: var(--shopper-shadow-hover);
+  transform: translateY(-4px);
+}
+.shopper-product-card .thumb {
+  aspect-ratio: 1;
+  background: #f8f9fc;
+  object-fit: cover;
+  width: 100%;
+}
+.shopper-price {
+  font-weight: 800;
+  color: var(--shopper-indigo);
+  font-size: 1.05rem;
+}
+.shopper-chip {
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--shopper-accent);
+  background: var(--shopper-lavender);
+  border-radius: 6px;
+  padding: 2px 8px;
+}
+
+.shopper-section-title {
+  font-weight: 800;
+  letter-spacing: -0.02em;
+}
+
+/* Featured: Spotlight + Best sellers */
+.shopper-featured-section {
+  scroll-margin-top: 7rem;
+}
+
+.shopper-img-fallback {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+  min-height: 140px;
+  background: linear-gradient(145deg, #f4f6fb 0%, #e8ecf4 100%);
+  color: #9aa3b2;
+  font-size: 2rem;
+}
+
+.shopper-product-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+/* Spotlight — horizontal card, fixed height (no giant square) */
+.shopper-spotlight-card {
+  display: flex;
+  flex-direction: column;
+  border-radius: var(--shopper-card-radius);
+  border: 1px solid #eef1f6;
+  background: #fff;
+  overflow: hidden;
+  box-shadow: var(--shopper-shadow);
+  transition: box-shadow 0.22s, transform 0.22s;
+}
+.shopper-spotlight-card:hover {
+  box-shadow: var(--shopper-shadow-hover);
+  transform: translateY(-2px);
+}
+.shopper-spotlight-media {
+  position: relative;
+  height: 180px;
+  background: #f8f9fc;
+  overflow: hidden;
+}
+.shopper-spotlight-media-link {
+  display: block;
+  width: 100%;
+  height: 100%;
+  text-decoration: none;
+}
+.shopper-spotlight-media .shopper-product-img,
+.shopper-spotlight-media .shopper-img-fallback {
+  min-height: 180px;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.shopper-spotlight-badge {
+  position: absolute;
+  top: 12px;
+  left: 12px;
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: #fff;
+  background: var(--shopper-indigo);
+  padding: 4px 10px;
+  border-radius: 999px;
+}
+.shopper-spotlight-body {
+  padding: 1.25rem 1.35rem 1.5rem;
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+}
+.shopper-spotlight-title {
+  font-size: 1.15rem;
+  font-weight: 800;
+  line-height: 1.35;
+  margin-bottom: 0.35rem;
+}
+.shopper-spotlight-price {
+  font-size: 1.2rem;
+  margin-bottom: 0 !important;
+}
+
+@media (min-width: 992px) {
+  .shopper-spotlight-card {
+    flex-direction: row;
+    min-height: 220px;
+    max-height: 260px;
+  }
+  .shopper-spotlight-media {
+    flex: 0 0 40%;
+    max-width: 40%;
+    height: auto;
+    min-height: 100%;
+  }
+  .shopper-spotlight-body {
+    flex: 1;
+    justify-content: center;
+    padding: 1.5rem 1.75rem;
+  }
+}
+
+/* Best seller grid cards — compact, equal height */
+.shopper-grid-card {
+  border-radius: 12px;
+  border: 1px solid #eef1f6;
+  background: #fff;
+  overflow: hidden;
+  transition: box-shadow 0.2s, transform 0.2s;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+.shopper-grid-card:hover {
+  box-shadow: var(--shopper-shadow-hover);
+  transform: translateY(-3px);
+}
+.shopper-grid-card-media {
+  height: 140px;
+  background: #f8f9fc;
+  overflow: hidden;
+  display: block;
+}
+.shopper-grid-card-link {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+.shopper-grid-card-media .shopper-product-img,
+.shopper-grid-card-media .shopper-img-fallback {
+  min-height: 150px;
+}
+.shopper-grid-card-body {
+  padding: 0.75rem 0.9rem 1rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  flex: 1 1 auto;
+}
+.shopper-grid-cat {
+  display: block;
+  font-size: 10px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--shopper-muted);
+  margin-bottom: 0.25rem;
+}
+.shopper-grid-title {
+  font-size: 0.9rem;
+  font-weight: 700;
+  line-height: 1.35;
+  margin: 0 0 0.4rem;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+.shopper-grid-card-body .shopper-price {
+  font-size: 0.95rem;
+}
+
+.shopper-featured-empty {
+  border-radius: var(--shopper-card-radius);
+  border: 1px dashed var(--shopper-lavender-strong);
+  background: var(--shopper-surface);
+  min-height: 200px;
+}
+
+/* Ensure images scale and fill their containers cleanly */
+.shopper-product-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+/* Make sure the spotlight and grid columns align in height on larger screens */
+.shopper-featured-section .row.align-items-stretch {
+  align-items: stretch;
+}
+
+/* Slightly reduce spacing inside cards for a compact, premium look */
+.shopper-spotlight-body .shopper-kicker,
+.shopper-grid-card-body .shopper-grid-cat {
+  margin-bottom: 6px;
+}
+
+/* Responsive tweaks */
+@media (max-width: 991.98px) {
+  .shopper-spotlight-media { height: 180px; }
+  .shopper-grid-card-media { height: 140px; }
+}
+
+@media (min-width: 1400px) {
+  .shopper-spotlight-media { flex: 0 0 38%; max-width: 38%; }
+}
+
+@media (min-width: 1200px) {
+  .shopper-grid-card-media {
+    height: 160px;
+  }
+  .shopper-grid-card-media .shopper-product-img,
+  .shopper-grid-card-media .shopper-img-fallback {
+    min-height: 160px;
+  }
+}
+
+.btn-shopper-outline {
+  border: 2px solid var(--shopper-indigo) !important;
+  color: var(--shopper-indigo) !important;
+  font-weight: 700;
+  border-radius: 999px !important;
+  padding: 0.4rem 1.25rem;
+}
+.btn-shopper-outline:hover {
+  background: var(--shopper-indigo) !important;
+  color: #fff !important;
+}
+
+.shopper-banner-carousel .carousel-inner {
+  border-radius: 20px;
+  overflow: hidden;
+}
+
+.shopper-footer {
+  background: linear-gradient(180deg, var(--shopper-indigo-dark) 0%, #0d1542 100%);
+  color: rgba(255, 255, 255, 0.88);
+  margin-top: 4rem;
+}
+.shopper-footer a {
+  color: rgba(255, 255, 255, 0.82);
+  text-decoration: none;
+}
+.shopper-footer a:hover {
+  color: #fff;
+  text-decoration: underline;
+}
+
+.shopper-bottom-nav {
+  display: none;
+}
+@media (max-width: 767.98px) {
+  .shopper-bottom-nav {
+    display: flex;
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    z-index: 1050;
+    background: #fff;
+    border-top: 1px solid #e8eaed;
+    box-shadow: 0 -4px 20px rgba(40, 53, 147, 0.08);
+    justify-content: space-around;
+    align-items: center;
+    padding: 6px 0 calc(8px + env(safe-area-inset-bottom));
+  }
+}
+.shopper-bottom-nav a {
+  flex: 1;
+  text-align: center;
+  padding: 4px;
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--shopper-muted);
+  text-decoration: none;
+}
+.shopper-bottom-nav a i {
+  display: block;
+  font-size: 1.35rem;
+  margin-bottom: 2px;
+}
+.shopper-bottom-nav a.active {
+  color: var(--shopper-indigo);
+}
+
+/* Bootstrap alignment on storefront */
+body.shopper-store .btn-primary {
+  background-color: var(--shopper-indigo) !important;
+  border-color: var(--shopper-indigo) !important;
+  border-radius: 10px !important;
+  font-weight: 600;
+}
+body.shopper-store .btn-primary:hover {
+  background-color: var(--shopper-indigo-dark) !important;
+  border-color: var(--shopper-indigo-dark) !important;
+}
+body.shopper-store .btn-outline-primary {
+  color: var(--shopper-indigo) !important;
+  border-color: var(--shopper-indigo) !important;
+  border-radius: 999px !important;
+  font-weight: 600;
+}
+body.shopper-store .btn-outline-primary:hover {
+  background: var(--shopper-indigo) !important;
+  color: #fff !important;
+}
+

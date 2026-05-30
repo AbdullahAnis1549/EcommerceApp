@@ -1,0 +1,19 @@
+@model EcommerceApp.Models.Category
+@{ 
+    ViewData["Title"] = "Edit Category"; 
+    Layout = "_AdminLayout"; 
+}
+<form method="post" enctype="multipart/form-data" class="border p-4 mt-4 row">
+    <input asp-for="Id" type="hidden" /><input asp-for="ImageUrl" type="hidden" />
+    <div class="col-md-8">
+        <h2>Edit Category</h2><hr/>
+        <div class="mb-3"><label asp-for="Name"></label><input asp-for="Name" class="form-control" /></div>
+        <div class="mb-3"><label asp-for="Description"></label><textarea asp-for="Description" class="form-control"></textarea></div>
+        <div class="mb-3"><label asp-for="DisplayOrder"></label><input asp-for="DisplayOrder" class="form-control" /></div>
+        <div class="mb-3"><label>Category Image</label><input type="file" name="file" class="form-control" accept="image/*" /></div>
+        <button type="submit" class="btn btn-primary">Update</button>
+        <a asp-action="Index" class="btn btn-secondary">Back</a>
+    </div>
+    <div class="col-md-4">@if (!string.IsNullOrEmpty(Model.ImageUrl)) { <img src="@Model.ImageUrl" class="img-fluid rounded" /> }</div>
+</form>
+@section Scripts { <partial name="_ValidationScriptsPartial" /> }

@@ -1,0 +1,9 @@
+@model EcommerceApp.Models.Banner
+@{ Layout = "_AdminLayout"; ViewData["Title"] = "Delete Banner"; }
+<form method="post" class="border p-4 mt-4">
+    <input asp-for="Id" type="hidden" />
+    <h2 class="text-danger">Delete Banner?</h2>
+    <p>@Model.Title</p>
+    <button type="submit" class="btn btn-danger">Delete</button>
+    <a asp-action="Index" class="btn btn-secondary">Cancel</a>
+</form>

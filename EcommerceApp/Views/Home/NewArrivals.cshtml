@@ -1,0 +1,15 @@
+@model List<EcommerceApp.Models.Product>
+@{
+    ViewData["Title"] = "New Arrivals";
+    ViewBag.EmptyMessage = "No new arrivals yet. An admin can mark products as “Show on New Arrivals page” when editing a product.";
+}
+
+<div class="d-flex flex-wrap justify-content-between align-items-center gap-3 mb-4">
+    <div>
+        <h1 class="shopper-section-title h4 mb-1">New Arrivals</h1>
+        <p class="text-muted small mb-0">@Model.Count new product@(Model.Count != 1 ? "s" : "")</p>
+    </div>
+    <a asp-controller="Home" asp-action="Shop" class="btn btn-sm shopper-btn-outline rounded-pill px-3"><i class="bi bi-grid me-1"></i>All products</a>
+</div>
+
+<partial name="_ProductListing" model="Model" />

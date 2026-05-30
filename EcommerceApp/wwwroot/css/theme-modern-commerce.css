@@ -1,0 +1,147 @@
+/* Modern Clean Commerce Theme (Amazon/Shopify/SaaS inspired) */
+:root {
+  --primary: #2563EB;
+  --success: #22C55E;
+  --warning: #F59E0B;
+  --background: #F9FAFB;
+  --card-radius: 14px;
+  --shadow: 0 2px 12px 0 rgba(37,99,235,0.07);
+  --font-main: 'Inter', 'Poppins', Arial, sans-serif;
+}
+
+body {
+  background: var(--background);
+  font-family: var(--font-main);
+  color: #222;
+}
+
+.navbar, .sidebar {
+  border-radius: var(--card-radius);
+  box-shadow: var(--shadow);
+}
+
+.btn-primary {
+  background: var(--primary);
+  border: none;
+  border-radius: 10px;
+  font-weight: 600;
+  transition: background 0.2s;
+}
+.btn-primary:hover {
+  background: #174ea6;
+}
+
+.btn-success, .btn-checkout {
+  background: var(--success);
+  border: none;
+  border-radius: 10px;
+  font-weight: 600;
+  color: #fff;
+}
+
+.card, .product-card, .category-card {
+  border-radius: var(--card-radius);
+  box-shadow: var(--shadow);
+  background: #fff;
+  transition: box-shadow 0.2s;
+}
+.card:hover, .product-card:hover, .category-card:hover {
+  box-shadow: 0 4px 24px 0 rgba(37,99,235,0.13);
+}
+
+.product-card img, .category-card img {
+  border-radius: 10px;
+  transition: transform 0.2s;
+}
+.product-card:hover img {
+  transform: scale(1.04);
+}
+
+.price-badge {
+  background: var(--primary);
+  color: #fff;
+  border-radius: 8px;
+  padding: 2px 10px;
+  font-size: 1rem;
+  font-weight: 600;
+}
+.discount-badge {
+  background: var(--warning);
+  color: #fff;
+  border-radius: 8px;
+  padding: 2px 10px;
+  font-size: 0.95rem;
+  font-weight: 600;
+}
+
+/* Sidebar (Admin) */
+.admin-sidebar {
+  background: #18181b;
+  color: #fff;
+  min-height: 100vh;
+  border-radius: 0 16px 16px 0;
+  box-shadow: var(--shadow);
+}
+.admin-sidebar .nav-link {
+  color: #fff;
+  border-radius: 8px;
+  margin-bottom: 6px;
+  font-weight: 500;
+}
+.admin-sidebar .nav-link.active, .admin-sidebar .nav-link:hover {
+  background: var(--primary);
+  color: #fff;
+}
+
+/* Cards for stats */
+.stats-card {
+  background: #fff;
+  border-radius: var(--card-radius);
+  box-shadow: var(--shadow);
+  padding: 1.5rem 1rem;
+  text-align: center;
+  margin-bottom: 1rem;
+}
+
+/* Responsive grid */
+@media (max-width: 768px) {
+  .product-grid, .category-grid {
+    grid-template-columns: 1fr !important;
+  }
+  .admin-sidebar {
+    min-height: auto;
+    border-radius: 0;
+  }
+}
+
+/* Mobile bottom nav */
+.mobile-bottom-nav {
+  display: none;
+}
+@media (max-width: 600px) {
+  .mobile-bottom-nav {
+    display: flex;
+    position: fixed;
+    bottom: 0; left: 0; right: 0;
+    background: #fff;
+    border-top: 1px solid #eee;
+    box-shadow: 0 -2px 12px 0 rgba(37,99,235,0.07);
+    z-index: 1000;
+    justify-content: space-around;
+    padding: 0.5rem 0;
+  }
+  .mobile-bottom-nav a {
+    color: #2563EB;
+    font-size: 1.3rem;
+    text-align: center;
+    flex: 1;
+  }
+}
+
+/* Utility classes */
+.rounded-10 { border-radius: 10px !important; }
+.rounded-16 { border-radius: 16px !important; }
+.shadow-soft { box-shadow: var(--shadow) !important; }
+.bg-primary { background: var(--primary) !important; color: #fff !important; }
+.bg-success { background: var(--success) !important; color: #fff !important; }
+.bg-warning { background: var(--warning) !important; color: #fff !important; }

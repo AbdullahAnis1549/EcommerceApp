@@ -1,0 +1,106 @@
+@model EcommerceApp.ViewModels.StoreHeaderViewModel
+
+<header class="shopper-main-header bg-white border-bottom">
+    <div class="container shopper-header-inner py-3">
+        <div class="row align-items-center g-3">
+            <div class="col-lg-2 col-md-3 col-6">
+                <a class="shopper-logo text-decoration-none d-flex align-items-center gap-2" asp-controller="Home" asp-action="Index">
+                    <span class="shopper-logo-icon"><i class="bi bi-bag-heart-fill"></i></span>
+                    <span class="shopper-logo-text">Shopper.</span>
+                </a>
+            </div>
+            <div class="col-lg-7 col-md-9 col-12 order-md-2 order-3 order-lg-2">
+                <form class="shopper-search-bar" asp-controller="Home" asp-action="Shop" method="get">
+                    <div class="input-group shopper-search-group">
+                        @if (Model.Categories.Any())
+                        {
+                            <select name="categoryId" class="form-select shopper-search-category" aria-label="Category">
+                                <option value="">All Categories</option>
+                                @foreach (var c in Model.Categories)
+                                {
+                                    <option value="@c.Id">@c.Name</option>
+                                }
+                            </select>
+                        }
+                        <input type="text" name="search" class="form-control shopper-search-input" placeholder="Search for products..." autocomplete="off" />
+                        <button type="submit" class="btn shopper-search-submit" aria-label="Search"><i class="bi bi-search"></i></button>
+                    </div>
+                </form>
+            </div>
+            <div class="col-lg-3 col-md-12 col-6 order-md-3 order-2 order-lg-3">
+                <div class="shopper-actions d-flex align-items-center justify-content-end gap-3 flex-wrap">
+                    @if (Model.IsAuthenticated)
+                    {
+                        <a asp-controller="Wishlist" asp-action="Index" class="shopper-action-icon-link position-relative" title="Wishlist">
+                            <i class="bi bi-heart"></i>
+                            @if (Model.WishlistCount > 0)
+                            {
+                                <span class="shopper-badge">@Model.WishlistCount</span>
+                            }
+                        </a>
+                        <a asp-controller="Cart" asp-action="Index" class="shopper-action-icon-link shopper-cart-chip text-decoration-none" title="Cart">
+                            <span class="position-relative d-inline-flex">
+                                <i class="bi bi-cart3 fs-5"></i>
+                                @if (Model.CartItemCount > 0)
+                                {
+                                    <span class="shopper-badge">@Model.CartItemCount</span>
+                                }
+                            </span>
+                            <span class="shopper-cart-total small fw-semibold d-none d-sm-inline ms-1">$@Model.CartTotal.ToString("N2")</span>
+                        </a>
+                        <div class="dropdown shopper-account-dropdown">
+                            <button class="btn shopper-account-btn dropdown-toggle d-flex align-items-center gap-2 py-2 px-2" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                <span class="shopper-avatar-sm"><i class="bi bi-person"></i></span>
+                                <span class="small text-start d-none d-xl-inline lh-1">
+                                    <span class="text-muted d-block" style="font-size:11px;">Hi</span>
+                                    <span class="fw-semibold text-dark">@(string.IsNullOrEmpty(Model.UserDisplayName) ? "Account" : (Model.UserDisplayName!.Length > 18 ? Model.UserDisplayName.Substring(0, 18) + "…" : Model.UserDisplayName))</span>
+                                </span>
+                            </button>
+                            <ul class="dropdown-menu dropdown-menu-end shadow shopper-dropdown-menu py-2">
+                                <li><a class="dropdown-item" asp-controller="User" asp-action="Home">My Dashboard</a></li>
+                                <li><a class="dropdown-item" asp-controller="Order" asp-action="Index">My Orders</a></li>
+                                <li><a class="dropdown-item" asp-controller="Account" asp-action="Profile">Profile</a></li>
+                                @if (User.IsInRole(SD.RoleAdmin))
+                                {
+                                    <li><hr class="dropdown-divider"></li>
+                                    <li><a class="dropdown-item text-primary fw-semibold" asp-controller="Admin" asp-action="Dashboard">Admin Panel</a></li>
+                                }
+                                <li><hr class="dropdown-divider"></li>
+                                <li>
+                                    <form asp-controller="Account" asp-action="Logout" method="post">
+                                        @Html.AntiForgeryToken()
+                                        <button type="submit" class="dropdown-item text-danger">Sign out</button>
+                                    </form>
+                                </li>
+                            </ul>
+                        </div>
+                    }
+                    else
+                    {
+                        <a asp-controller="Account" asp-action="Login" class="shopper-action-icon-link position-relative" title="Wishlist"><i class="bi bi-heart"></i></a>
+                        <a asp-controller="Account" asp-action="Login" class="shopper-action-icon-link shopper-cart-chip text-decoration-none" title="Cart">
+                            <span class="d-inline-flex"><i class="bi bi-cart3 fs-5"></i></span>
+                        </a>
+                        <a asp-controller="Account" asp-action="Login" class="btn btn-sm shopper-btn-primary">Login</a>
+                        <a asp-controller="Account" asp-action="Register" class="btn btn-sm shopper-btn-outline d-none d-sm-inline-flex">Register</a>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Secondary navigation -->
+    <nav class="shopper-subnav border-top d-none d-md-block">
+        <div class="container">
+            <ul class="nav shopper-subnav-links py-2 flex-wrap justify-content-center justify-content-lg-start gap-2">
+                <li class="nav-item"><a class="nav-link px-3 @(ViewContext.RouteData.Values["controller"]?.ToString() == "Home" && ViewContext.RouteData.Values["action"]?.ToString() == "Index" ? "active" : "")" asp-controller="Home" asp-action="Index">Home</a></li>
+                <li class="nav-item"><a class="nav-link px-3 @(ViewContext.RouteData.Values["action"]?.ToString() == "Shop" ? "active" : "")" asp-controller="Home" asp-action="Shop">Shop</a></li>
+                <li class="nav-item"><a class="nav-link px-3 @(ViewContext.RouteData.Values["action"]?.ToString() == "Deals" ? "active" : "")" asp-controller="Home" asp-action="Deals">Deals</a></li>
+                <li class="nav-item"><a class="nav-link px-3 @(ViewContext.RouteData.Values["action"]?.ToString() == "NewArrivals" ? "active" : "")" asp-controller="Home" asp-action="NewArrivals">New Arrivals</a></li>
+                <li class="nav-item"><a class="nav-link px-3" asp-controller="Home" asp-action="Index" asp-fragment="best-sellers">Best Sellers</a></li>
+                <li class="nav-item"><a class="nav-link px-3 @(ViewContext.RouteData.Values["action"]?.ToString() == "About" ? "active" : "")" asp-controller="Home" asp-action="About">About</a></li>
+                <li class="nav-item"><a class="nav-link px-3" asp-controller="Home" asp-action="Contact">Contact</a></li>
+            </ul>
+        </div>
+    </nav>
+</header>
