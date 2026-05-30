@@ -155,6 +155,17 @@ EcommerceApp/
 | `/Account/Register` | Create account |
 | `/Admin/Dashboard` | Admin dashboard (admin role required) |
 
+## 📸 Screenshots
+
+### Home Page
+![Home](screenshots/Home.png)
+
+### Cart Page
+![Cart](screenshots/Cart.png)
+
+### Admin Dashboard
+![Admin](screenshots/Admin.png)
+
 ## License
 
 Portfolio / educational project.
