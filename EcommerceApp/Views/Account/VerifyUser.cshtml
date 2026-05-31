@@ -28,7 +28,18 @@
 
                         <div class="mb-4">
                             <label for="verifyCode" class="form-label fw-bold">Verification Code</label>
-                            <input type="text" id="verifyCode" name="verifyCode" class="form-control text-center fs-4" placeholder="123456" maxlength="6" required />
+                            <input type="text"
+                                   id="verifyCode"
+                                   name="verifyCode"
+                                   class="form-control text-center fs-4"
+                                   placeholder="123456"
+                                   maxlength="6"
+                                   minlength="6"
+                                   pattern="[0-9]{6}"
+                                   title="Please enter the 6-digit numeric code"
+                                   inputmode="numeric"
+                                   required />
+                            <span id="verifyCodeError" class="text-danger small"></span>
                         </div>
 
                         <div class="d-grid gap-2">
@@ -45,3 +56,13 @@
         </div>
     </div>
 </div>
+
+@section Scripts {
+    <script>
+        const verifyInput = document.getElementById('verifyCode');
+        verifyInput.addEventListener('input', function () {
+            this.value = this.value.replace(/\D/g, '').slice(0, 6);
+        });
+    </script>
+}
+

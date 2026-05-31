@@ -24,6 +24,7 @@ namespace EcommerceApp.Models
 
         [Required(ErrorMessage = "Phone number is required")]
         [StringLength(20, ErrorMessage = "Phone cannot exceed 20 characters")]
+        [RegularExpression(@"^[\d\s\-\+\(\)]{7,20}$", ErrorMessage = "Invalid phone number format")]
         public string Phone { get; set; } = string.Empty;
 
         [Required(ErrorMessage = "Password is required")]
